@@ -1,8 +1,10 @@
 package com.github.basdxz.tesrplay;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = TESRPlayground.MODID, name = TESRPlayground.NAME, version = TESRPlayground.VERSION)
 public class TESRPlayground {
@@ -12,11 +14,7 @@ public class TESRPlayground {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        //Some example code
-        //System.out.println("DIRT BLOCK 2 >> " + Blocks.dirt.getUnlocalizedName());
-
-        //System.out.println(MODID);
-        //System.out.println(MODID);
-        //System.out.println(MODID);
+        GameRegistry.registerBlock(new TestBlock(), "[YourBlock]");
+        ClientRegistry.bindTileEntitySpecialRenderer(TestTile.class, new TestTESR());
     }
 }
