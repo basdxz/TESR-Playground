@@ -74,7 +74,7 @@ configure<UserExtension> {
     //Replaces version inside the mod
     this.includes.addAll(
             arrayOf(
-                    "ExampleMod.java"
+                    "TESRPlayground.java"
             )
     )
     this.replacements.putAll(
@@ -131,7 +131,7 @@ tasks.withType<Jar> {
     //Mark as outdated if versions change
     this.inputs.properties += "version" to project.version
     this.inputs.properties += "mcversion" to project.minecraft.version
-    this.archiveBaseName.set("ExampleMod-${project.minecraft.version}")
+    this.archiveBaseName.set("TESRPlayground-${project.minecraft.version}")
 
     //Replace versions in mcmod.info
     this.filesMatching("/mcmod.info") {

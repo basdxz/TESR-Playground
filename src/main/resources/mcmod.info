@@ -1,14 +1,14 @@
 [
   {
-    "modid": "examplemod",
+    "modid": "tesrplay",
     "name": "Example Mod",
-    "description": "Example placeholder mod.",
+    "description": "Where I play with Tile Entity Special Renderers",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "${url}",
-    "updateUrl": "${updateUrl}",
-    "authorList": "basdxz",
-    "credits": "${credits}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["basdxz"],
+    "credits": "",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []
