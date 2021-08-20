@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "examplemod",
+    "name": "Example Mod",
+    "description": "Example placeholder mod.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "${url}",
+    "updateUrl": "${updateUrl}",
+    "authorList": "basdxz",
+    "credits": "${credits}",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
