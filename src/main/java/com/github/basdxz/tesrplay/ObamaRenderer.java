@@ -1,56 +1,32 @@
-package com.github.basdxz.tesrplay.ultimate;
+package com.github.basdxz.tesrplay;
 
-import com.github.basdxz.tesrplay.TESRPlayground;
-import cpw.mods.fml.client.FMLClientHandler;
 import lombok.Builder;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.model.AdvancedModelLoader;
-import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
-public class WavefrontBlockRenderer {
-    private static final String ASSET_FILE_DIRECTORY = TESRPlayground.MODID + ":textures/models/";
+public class ObamaRenderer extends BlockItemSpecialRenderer {
     private static final float CHUNK_TO_BLOCK_SCALE = 0.0625F;
     private static final int BLOCK_TO_CHUNK_SCALE = 16;
     private static final float HALF = 0.5F;
 
-    private final String name;
-    private final ResourceLocation texture;
-    private final IModelCustom model;
-
-    public WavefrontBlockRenderer(String name) {
-        this.name = name;
-        texture = generateTexure();
-        model = generateModel();
-    }
-
-    private ResourceLocation generateTexure() {
-        return new ResourceLocation(ASSET_FILE_DIRECTORY + name + ".png");
-    }
-
-    private IModelCustom generateModel() {
-        return AdvancedModelLoader.loadModel(new ResourceLocation(ASSET_FILE_DIRECTORY + name + ".obj"));
+    public ObamaRenderer(String name) {
+        super(name);
     }
 
     @Builder(builderMethodName = "renderBuilder", buildMethodName = "run")
-    private void render(int blockPosX, int blockPosY, int blockPosZ, float offsetX, float offsetY, float offsetZ,
-                        float rotX, float rotY, float rotZ) {
-        TesselationHijacker.pauseDraw();
-        GL11.glPushMatrix(); //Start Rendering
-        bindTexture();
-        updateColorTint();
-        translateObject(blockPosX, blockPosY, blockPosZ, offsetX, offsetY, offsetZ);
-        rotateObject(blockPosX, blockPosY, blockPosZ, rotX, rotY, rotZ);
-        scaleFromChunkToBlock();
-        renderModel();
-        GL11.glPopMatrix(); //Done Rendering
-        TesselationHijacker.resumeDraw();
-    }
-
-    private void bindTexture() {
-        FMLClientHandler.instance().getClient().getTextureManager().bindTexture(texture);
+    protected void render(int blockPosX, int blockPosY, int blockPosZ, float offsetX, float offsetY, float offsetZ,
+                          float rotX, float rotY, float rotZ) {
+        safeRender(new Runnable() {
+            @Override
+            public void run() {
+                bindTexture();
+                updateColorTint();
+                translateObject(blockPosX, blockPosY, blockPosZ, offsetX, offsetY, offsetZ);
+                rotateObject(blockPosX, blockPosY, blockPosZ, rotX, rotY, rotZ);
+                scaleFromChunkToBlock();
+                renderModel();
+            }
+        });
     }
 
     private static void updateColorTint() {
@@ -60,9 +36,9 @@ public class WavefrontBlockRenderer {
     private static void translateObject(int blockPosX, int blockPosY, int blockPosZ, float offsetX, float offsetY,
                                         float offsetZ) {
         GL11.glTranslatef(
-                blockPosToChunkPos(blockPosX) + blockPosToBlockInChunkPos(blockPosX),
-                blockPosY,
-                blockPosToChunkPos(blockPosZ) + blockPosToBlockInChunkPos(blockPosZ));
+                blockPosToChunkPos(blockPosX) + blockPosToBlockInChunkPos(blockPosX) + offsetX,
+                blockPosY + offsetY,
+                blockPosToChunkPos(blockPosZ) + blockPosToBlockInChunkPos(blockPosZ) + offsetZ);
     }
 
     private static void rotateObject(int posX, int posY, int posZ, double rotX, double rotY, double rotZ) {
@@ -117,15 +93,11 @@ public class WavefrontBlockRenderer {
         GL11.glScalef(CHUNK_TO_BLOCK_SCALE, CHUNK_TO_BLOCK_SCALE, CHUNK_TO_BLOCK_SCALE);
     }
 
-    private void renderModel() {
-        model.renderAll();
-    }
-
     public void renderBlock(int posX, int posY, int posZ) {
-        renderBuilder().blockPosX(posX).blockPosY(posY).blockPosZ(posZ).run();
+        renderBuilder().blockPosX(posX).blockPosY(posY).blockPosZ(posZ).rotY(105.3F).rotZ(45F).rotX(88F).run();
     }
 
     public void renderItem(RenderBlocks renderer) {
-        renderBuilder().run();
+        renderBuilder().offsetX(-0.5F).offsetY(-0.5F).offsetZ(-0.5F).rotY(90).run();
     }
 }

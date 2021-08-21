@@ -1,6 +1,5 @@
-package com.github.basdxz.tesrplay.ultimate;
+package com.github.basdxz.tesrplay;
 
-import com.github.basdxz.tesrplay.ultimate.BlockSpecialRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -10,7 +9,7 @@ public class TestBlock extends Block {
     public TestBlock(int renderType) {
         super(Material.rock);
         this.renderType = renderType;
-        setBlockName("[YourBlock]");
+        setBlockName("TestBlock");
     }
 
     @Override

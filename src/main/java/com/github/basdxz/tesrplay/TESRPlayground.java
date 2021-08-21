@@ -1,7 +1,5 @@
 package com.github.basdxz.tesrplay;
 
-import com.github.basdxz.tesrplay.ultimate.TestBlock;
-import com.github.basdxz.tesrplay.ultimate.BlockSpecialRenderer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -15,7 +13,7 @@ public class TESRPlayground {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        BlockSpecialRenderer render = new BlockSpecialRenderer("prism");
+        ObamaBlockRenderer render = new ObamaBlockRenderer("prism");
         TestBlock testBlock = new TestBlock(render.getRenderId());
         GameRegistry.registerBlock(testBlock, "blocktestblock");
     }

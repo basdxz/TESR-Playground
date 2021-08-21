@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.ultimate;
+package com.github.basdxz.tesrplay;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import lombok.SneakyThrows;

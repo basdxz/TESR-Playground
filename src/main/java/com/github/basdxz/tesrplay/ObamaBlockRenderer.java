@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.ultimate;
+package com.github.basdxz.tesrplay;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -6,13 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
-
-public class BlockSpecialRenderer implements ISimpleBlockRenderingHandler {
-    private final WavefrontBlockRenderer wavefrontBlockRenderer;
+public class ObamaBlockRenderer implements ISimpleBlockRenderingHandler {
+    private final ObamaRenderer wavefrontBlockSpecialRenderer;
     private final int mRenderID;
 
-    public BlockSpecialRenderer(String name) {
-        wavefrontBlockRenderer = new WavefrontBlockRenderer(name);
+    public ObamaBlockRenderer(String name) {
+        wavefrontBlockSpecialRenderer = new ObamaRenderer(name);
         mRenderID = RenderingRegistry.getNextAvailableRenderId();
         registerRenderer();
     }
@@ -24,13 +23,13 @@ public class BlockSpecialRenderer implements ISimpleBlockRenderingHandler {
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId,
                                     RenderBlocks renderer) {
-        wavefrontBlockRenderer.renderBlock(x, y, z);
+        wavefrontBlockSpecialRenderer.renderBlock(x, y, z);
         return true;
     }
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
-        wavefrontBlockRenderer.renderItem(renderer);
+        wavefrontBlockSpecialRenderer.renderItem(renderer);
     }
 
     @Override
