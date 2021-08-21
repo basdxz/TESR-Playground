@@ -1,6 +1,7 @@
 package com.github.basdxz.tesrplay;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
+import com.github.basdxz.tesrplay.ultimate.TestBlock;
+import com.github.basdxz.tesrplay.ultimate.BlockSpecialRenderer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -14,7 +15,8 @@ public class TESRPlayground {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        GameRegistry.registerBlock(new TestBlock(), "[YourBlock]");
-        ClientRegistry.bindTileEntitySpecialRenderer(TestTile.class, new TestTESR());
+        BlockSpecialRenderer render = new BlockSpecialRenderer("prism");
+        TestBlock testBlock = new TestBlock(render.getRenderId());
+        GameRegistry.registerBlock(testBlock, "blocktestblock");
     }
 }
