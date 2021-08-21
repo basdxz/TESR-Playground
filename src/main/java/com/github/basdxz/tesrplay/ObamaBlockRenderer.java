@@ -29,7 +29,7 @@ public class ObamaBlockRenderer implements ISimpleBlockRenderingHandler {
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
-        wavefrontBlockSpecialRenderer.renderItem(renderer);
+        wavefrontBlockSpecialRenderer.renderItem();
     }
 
     @Override

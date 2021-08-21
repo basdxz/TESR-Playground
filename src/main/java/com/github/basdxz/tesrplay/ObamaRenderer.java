@@ -10,22 +10,19 @@ public class ObamaRenderer extends BlockItemSpecialRenderer {
     private static final float HALF = 0.5F;
 
     public ObamaRenderer(String name) {
-        super(name);
+        super(TESRPlayground.MODID, name);
     }
 
     @Builder(builderMethodName = "renderBuilder", buildMethodName = "run")
     protected void render(int blockPosX, int blockPosY, int blockPosZ, float offsetX, float offsetY, float offsetZ,
                           float rotX, float rotY, float rotZ) {
-        safeRender(new Runnable() {
-            @Override
-            public void run() {
-                bindTexture();
-                updateColorTint();
-                translateObject(blockPosX, blockPosY, blockPosZ, offsetX, offsetY, offsetZ);
-                rotateObject(blockPosX, blockPosY, blockPosZ, rotX, rotY, rotZ);
-                scaleFromChunkToBlock();
-                renderModel();
-            }
+        safeRender(() -> {
+            bindTexture();
+            updateColorTint();
+            translateObject(blockPosX, blockPosY, blockPosZ, offsetX, offsetY, offsetZ);
+            rotateObject(blockPosX, blockPosY, blockPosZ, rotX, rotY, rotZ);
+            scaleFromChunkToBlock();
+            renderModel();
         });
     }
 
@@ -94,10 +91,10 @@ public class ObamaRenderer extends BlockItemSpecialRenderer {
     }
 
     public void renderBlock(int posX, int posY, int posZ) {
-        renderBuilder().blockPosX(posX).blockPosY(posY).blockPosZ(posZ).rotY(105.3F).rotZ(45F).rotX(88F).run();
+        renderBuilder().blockPosX(posX).blockPosY(posY).blockPosZ(posZ).run();
     }
 
-    public void renderItem(RenderBlocks renderer) {
+    public void renderItem() {
         renderBuilder().offsetX(-0.5F).offsetY(-0.5F).offsetZ(-0.5F).rotY(90).run();
     }
 }

@@ -8,29 +8,30 @@ import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
 public abstract class BlockItemSpecialRenderer {
-    private static final String ASSET_FILE_DIRECTORY = TESRPlayground.MODID + ":textures/models/";
+    private static final String ASSET_FILE_DIRECTORY = ":textures/models/";
 
     private final String name;
     private final ResourceLocation texture;
     private final IModelCustom model;
 
-    public BlockItemSpecialRenderer(String name) {
+    public BlockItemSpecialRenderer(String modid, String name) {
         this.name = name;
-        texture = generateTexure();
-        model = generateModel();
+        texture = generateTexure(modid);
+        model = generateModel(modid);
     }
 
-    private ResourceLocation generateTexure() {
-        return new ResourceLocation(ASSET_FILE_DIRECTORY + name + ".png");
+    private ResourceLocation generateTexure(String modid) {
+        return new ResourceLocation(modid + ASSET_FILE_DIRECTORY + name + ".png");
     }
 
-    private IModelCustom generateModel() {
-        return AdvancedModelLoader.loadModel(new ResourceLocation(ASSET_FILE_DIRECTORY + name + ".obj"));
+    private IModelCustom generateModel(String modid) {
+        return AdvancedModelLoader.loadModel(
+                new ResourceLocation(modid + ASSET_FILE_DIRECTORY + name + ".obj"));
     }
 
     public abstract void renderBlock(int posX, int posY, int posZ);
 
-    public abstract void renderItem(RenderBlocks renderer);
+    public abstract void renderItem();
 
     protected void bindTexture() {
         FMLClientHandler.instance().getClient().getTextureManager().bindTexture(texture);
