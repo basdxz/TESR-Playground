@@ -23,8 +23,7 @@ public enum Models implements Model {
     }
 
     public static void load() {
-        for (Models model : Models.values()) {
+        for (Models model : Models.values())
             model.registerModel();
-        }
     }
 }

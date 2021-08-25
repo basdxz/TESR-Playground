@@ -24,8 +24,8 @@ public final class TessellatorExt {
   }
 
   public static void resumeDraw(@This Tessellator thiz) {
-    rebindBlockTextures();
     if (suspendedDrawing) {
+      rebindBlockTextures();
       thiz.startDrawing(suspendedDrawMode);
     }
   }
