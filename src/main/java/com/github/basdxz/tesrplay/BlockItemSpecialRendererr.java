@@ -2,19 +2,20 @@ package com.github.basdxz.tesrplay;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import org.lwjgl.opengl.GL11;
 
-public abstract class BlockItemSpecialRenderer {
+public abstract class BlockItemSpecialRendererr {
     private static final String ASSET_FILE_DIRECTORY = ":textures/models/";
 
     private final String name;
     private final ResourceLocation texture;
     private final IModelCustom model;
 
-    public BlockItemSpecialRenderer(String modid, String name) {
+    public BlockItemSpecialRendererr(String modid, String name) {
         this.name = name;
         texture = generateTexure(modid);
         model = generateModel(modid);
@@ -42,10 +43,10 @@ public abstract class BlockItemSpecialRenderer {
     }
 
     protected static void safeRender(Runnable runnable) {
-        TesselationHijacker.pauseDraw();
+        Tessellator.instance.pauseDraw();
         GL11.glPushMatrix();
         runnable.run();
         GL11.glPopMatrix();
-        TesselationHijacker.resumeDraw();
+        Tessellator.instance.resumeDraw();
     }
 }

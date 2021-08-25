@@ -1,5 +1,6 @@
 package com.github.basdxz.tesrplay;
 
+import com.github.basdxz.tesrplay.newRender.Models;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -16,5 +17,7 @@ public class TESRPlayground {
         ObamaBlockRenderer render = new ObamaBlockRenderer("prism");
         TestBlock testBlock = new TestBlock(render.getRenderId());
         GameRegistry.registerBlock(testBlock, "blocktestblock");
+
+        Models.load();
     }
 }

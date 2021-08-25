@@ -17,7 +17,6 @@ buildscript {
 plugins {
     idea
     java
-    id("io.freefair.lombok") version "6.0.0-m2"
 }
 
 apply(plugin = "forge")
@@ -112,6 +111,14 @@ repositories {
 }
 
 dependencies {
+    //Lombok
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
+    //Manifold Extensions
+    implementation("systems.manifold:manifold-javadoc-agent:2021.1.14")
+    implementation("systems.manifold:manifold-ext-rt:2021.1.14")
+    annotationProcessor("systems.manifold:manifold-ext:2021.1.14")
+
     //Local Libraries
     compile(fileTree("libs") { this.include("*.jar") })
 
@@ -145,17 +152,18 @@ tasks.withType<Jar> {
 }
 
 tasks {
+    withType<JavaCompile> {
+        options.compilerArgs.add("-Xplugin:Manifold")
+    }
     val sourcesJar by creating(Jar::class) {
         this.from(sourceSets.main.get().allSource)
         this.archiveClassifier.set("sources")
     }
-
     val javadocJar by creating(Jar::class) {
         dependsOn.add(javadoc)
         archiveClassifier.set("javadoc")
         from(javadoc)
     }
-
     val devJar by creating(Jar::class) {
         from(sourceSets.main.get().output)
         archiveClassifier.set("dev")

@@ -1,15 +1,14 @@
 package com.github.basdxz.tesrplay;
 
 import lombok.Builder;
-import net.minecraft.client.renderer.RenderBlocks;
 import org.lwjgl.opengl.GL11;
 
-public class ObamaRenderer extends BlockItemSpecialRenderer {
+public class ObamaRendererr extends BlockItemSpecialRendererr {
     private static final float CHUNK_TO_BLOCK_SCALE = 0.0625F;
     private static final int BLOCK_TO_CHUNK_SCALE = 16;
     private static final float HALF = 0.5F;
 
-    public ObamaRenderer(String name) {
+    public ObamaRendererr(String name) {
         super(TESRPlayground.MODID, name);
     }
 
