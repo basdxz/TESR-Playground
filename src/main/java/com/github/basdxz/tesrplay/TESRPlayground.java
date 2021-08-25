@@ -1,7 +1,7 @@
 package com.github.basdxz.tesrplay;
 
-import com.github.basdxz.tesrplay.newRender.MetaBlockRenderer;
-import com.github.basdxz.tesrplay.newRender.Models;
+import com.github.basdxz.tesrplay.newRender.MetaBlockRenderingHandler;
+import com.github.basdxz.tesrplay.newRender.model.Models;
 import com.github.basdxz.tesrplay.newRender.TestBlock;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -18,8 +18,8 @@ public class TESRPlayground {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         Models.load();
-        MetaBlockRenderer.load();
-        val testBlock = new TestBlock(MetaBlockRenderer.getInstanceRenderId());
+        MetaBlockRenderingHandler.load();
+        val testBlock = new TestBlock(MetaBlockRenderingHandler.getInstanceRenderId());
         GameRegistry.registerBlock(testBlock, "blocktestblock");
     }
 }

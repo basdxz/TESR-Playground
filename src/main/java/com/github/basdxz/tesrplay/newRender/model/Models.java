@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.newRender;
+package com.github.basdxz.tesrplay.newRender.model;
 
 import com.github.basdxz.tesrplay.TESRPlayground;
 import cpw.mods.fml.relauncher.SideOnly;

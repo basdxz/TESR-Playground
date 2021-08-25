@@ -4,11 +4,11 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import lombok.Getter;
 
-public abstract class BlockItemSpecialRenderer implements ISimpleBlockRenderingHandler {
+public abstract class BlockRenderingHandler implements ISimpleBlockRenderingHandler {
     @Getter
     private final int renderId;
 
-    public BlockItemSpecialRenderer() {
+    public BlockRenderingHandler() {
         renderId = generateRenderID();
         registerBlockHandler();
     }

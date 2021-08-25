@@ -1,6 +1,7 @@
-package com.github.basdxz.tesrplay.newRender.interfacesForUsers;
+package com.github.basdxz.tesrplay.newRender.providers;
 
-import com.github.basdxz.tesrplay.newRender.Model;
+import com.github.basdxz.tesrplay.newRender.model.Model;
+import com.github.basdxz.tesrplay.newRender.model.ModelRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;

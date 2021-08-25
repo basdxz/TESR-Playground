@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.newRender.interfacesForUsers;
+package com.github.basdxz.tesrplay.newRender.providers;
 
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;

@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.newRender;
+package com.github.basdxz.tesrplay.newRender.model;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import lombok.AllArgsConstructor;

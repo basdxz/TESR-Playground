@@ -1,6 +1,6 @@
 package com.github.basdxz.tesrplay.newRender;
 
-import com.github.basdxz.tesrplay.newRender.interfacesForUsers.RenderProvider;
+import com.github.basdxz.tesrplay.newRender.providers.RenderProvider;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import net.minecraft.block.Block;
@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MetaBlockRenderer extends BlockItemSpecialRenderer {
-    private static BlockItemSpecialRenderer INSTANCE = new MetaBlockRenderer();
+public class MetaBlockRenderingHandler extends BlockRenderingHandler {
+    private static BlockRenderingHandler INSTANCE = new MetaBlockRenderingHandler();
 
     public static void load() {
-        INSTANCE = new MetaBlockRenderer();
+        INSTANCE = new MetaBlockRenderingHandler();
     }
 
     public static int getInstanceRenderId() {

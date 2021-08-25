@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.newRender;
+package com.github.basdxz.tesrplay.newRender.model;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;

@@ -1,8 +1,8 @@
 package com.github.basdxz.tesrplay.newRender;
 
-import com.github.basdxz.tesrplay.newRender.Model;
-import com.github.basdxz.tesrplay.newRender.Models;
-import com.github.basdxz.tesrplay.newRender.interfacesForUsers.ModelRenderProvider;
+import com.github.basdxz.tesrplay.newRender.model.Model;
+import com.github.basdxz.tesrplay.newRender.providers.ModelRenderProvider;
+import com.github.basdxz.tesrplay.newRender.model.Models;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 

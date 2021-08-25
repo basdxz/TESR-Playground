@@ -1,6 +1,5 @@
-package com.github.basdxz.tesrplay.newRender.interfacesForUsers;
+package com.github.basdxz.tesrplay.newRender.model;
 
-import com.github.basdxz.tesrplay.newRender.Model;
 import lombok.*;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.util.ForgeDirection;
