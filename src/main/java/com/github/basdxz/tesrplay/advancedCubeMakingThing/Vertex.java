@@ -8,14 +8,13 @@ public class Vertex {
     private final double posX;
     private final double posY;
     private final double posZ;
-    private final double posU;
-    private final double posV;
+    private final PosUV posUV;
     //private final redAO;
     //private final greenAO;
     //private final blueAO;
     //private final brightnessAO;
 
-    public void addToTesselator() {
-        Tessellator.instance.addVertexWithUV(posX, posY, posZ, posU, posV);
+    public void tessellate() {
+        Tessellator.instance.addVertexWithUV(posX, posY, posZ, posUV.posU(), posUV.posV());
     }
 }

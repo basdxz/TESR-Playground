@@ -7,11 +7,14 @@ import lombok.NonNull;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Quad {
-    @Builder(builderClassName = "QuadBuilder", builderMethodName = "quadBuilder", buildMethodName = "render")
-    public static void render(@NonNull Vertex bottomLeft, @NonNull Vertex bottomRight, @NonNull Vertex topLeft, @NonNull Vertex topRight) {
-        bottomLeft.addToTesselator();
-        bottomRight.addToTesselator();
-        topLeft.addToTesselator();
-        topRight.addToTesselator();
+    @Builder(builderClassName = "QuadBuilder", builderMethodName = "quadBuilder", buildMethodName = "tessellate")
+    public static void render(@NonNull Vertex bottomLeft,
+                              @NonNull Vertex bottomRight,
+                              @NonNull Vertex topLeft,
+                              @NonNull Vertex topRight) {
+        bottomLeft.tessellate();
+        bottomRight.tessellate();
+        topLeft.tessellate();
+        topRight.tessellate();
     }
 }

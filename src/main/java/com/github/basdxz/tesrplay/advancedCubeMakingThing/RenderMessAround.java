@@ -21,19 +21,16 @@ public class RenderMessAround {
         double quadMinZ = posZ + renderMinZ;
         double quadMaxZ = posZ + renderMaxZ;
 
-        val uvPos = UVPos.builder()
-                .texture(icon)
-                .renderMinU(renderMinX)
-                .renderMaxU(renderMaxX)
-                .renderMinV(renderMinZ)
-                .renderMaxV(renderMaxZ)
-                .build();
+        val uvPosBottomLeft = new PosUV(icon, renderMaxX, renderMaxZ, 0);
+        val uvPosBottomRight = new PosUV(icon, renderMaxX, renderMinZ, 0);
+        val uvPosTopLeft = new PosUV(icon, renderMinX, renderMinZ, 0);
+        val uvPosTopRight = new PosUV(icon, renderMinX, renderMaxZ, 0);
 
         Quad.quadBuilder()
-                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ, uvPos.maxU(), uvPos.maxV()))
-                .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ, uvPos.maxU(), uvPos.minV()))
-                .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ, uvPos.minU(), uvPos.minV()))
-                .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ, uvPos.minU(), uvPos.maxV()))
-                .render();
+                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ, uvPosBottomLeft))
+                .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ, uvPosBottomRight))
+                .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ, uvPosTopLeft))
+                .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ, uvPosTopRight))
+                .tessellate();
     }
 }

@@ -119,6 +119,8 @@ dependencies {
     implementation("systems.manifold:manifold-ext-rt:2021.1.14")
     annotationProcessor("systems.manifold:manifold-ext:2021.1.14")
 
+    implementation("org.ejml:ejml-all:0.31")
+
     //Local Libraries
     compile(fileTree("libs") { this.include("*.jar") })
 

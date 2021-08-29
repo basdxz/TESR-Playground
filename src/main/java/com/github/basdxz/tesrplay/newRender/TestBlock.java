@@ -3,6 +3,7 @@ package com.github.basdxz.tesrplay.newRender;
 import com.github.basdxz.tesrplay.newRender.model.Model;
 import com.github.basdxz.tesrplay.newRender.providers.CubeRenderProvider;
 import com.github.basdxz.tesrplay.newRender.model.Models;
+import com.github.basdxz.tesrplay.newRender.providers.ModelRenderProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.IIcon;
@@ -24,10 +25,10 @@ public class TestBlock extends Block implements CubeRenderProvider {
     //    return super.getIcon(p_149673_1_, p_149673_2_, p_149673_3_, p_149673_4_, p_149673_5_);
     //}
 
-    @Override
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
-        return super.getIcon(p_149691_1_, p_149691_2_);
-    }
+    //@Override
+    //public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
+    //    return super.getIcon(p_149691_1_, p_149691_2_);
+    //}
 
     @Override
     public boolean isOpaqueCube() {
