@@ -13,7 +13,7 @@ public interface CubeRenderProvider extends RenderProvider {
         //Tessellator.instance.setColorOpaque_F(1, 1, 1);
         //Drawing.renderAllFaces(renderer, null, 0, 0, 0, Blocks.iron_block.getIcon(0, 0));
 
-        val icon = Blocks.crafting_table.getIcon(0, 0);
+        val icon = Blocks.lapis_ore.getIcon(0, 0);
         RenderMessAround.renderFaceYPos(null, posX, posY, posZ, icon);
 
         //posX = 0;

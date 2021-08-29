@@ -7,26 +7,44 @@ import lombok.var;
 import net.minecraft.util.IIcon;
 import org.ejml.simple.SimpleMatrix;
 
+import java.util.Random;
+
 import static java.lang.Math.toRadians;
 
 @Value
 @Accessors(fluent = true)
 public class PosUV {
     private static final double ICON_SCALE = 16.0D;
+    private static final double CENTER_TRANSLATION = -0.5D;
+    private static final double SCALE_ROTATION_RATIO = Math.sqrt(0.5D) - 1.0D;
 
     double posU;
     double posV;
 
     public PosUV(IIcon icon, double posU, double posV, double rot) {
+        rot = toRadians(rot);
         posU = clamp(posU);
         posV = clamp(posV);
-        rot = toRadians(45);//fixme switch to use actual rot
 
-        val translation = -0.5D;
+        var scaleRatio = 1.0D;
+
+        scaleRatio = rot % (Math.PI / 2);
+        if (scaleRatio > (Math.PI / 4))
+            scaleRatio = (Math.PI / 2) - scaleRatio;
+        // This function is divine
+        scaleRatio = Math.sqrt(2) / Math.cos(Math.PI / 4 - scaleRatio) / 2;
+
         val rotation = new SimpleMatrix(
                 new double[][]{
                         new double[]{Math.cos(rot), -Math.sin(rot)},
                         new double[]{Math.sin(rot), Math.cos(rot)}
+                }
+        );
+
+        val scale = new SimpleMatrix(
+                new double[][]{
+                        new double[]{scaleRatio, 0},
+                        new double[]{0, scaleRatio}
                 }
         );
 
@@ -37,9 +55,10 @@ public class PosUV {
                 }
         );
 
-        uvMatrix = uvMatrix.plus(translation);
+        uvMatrix = uvMatrix.plus(CENTER_TRANSLATION);
         uvMatrix = rotation.mult(uvMatrix);
-        uvMatrix = uvMatrix.minus(translation);
+        uvMatrix = scale.mult(uvMatrix);
+        uvMatrix = uvMatrix.minus(CENTER_TRANSLATION);
 
         posU = uvMatrix.get(0);
         posV = uvMatrix.get(1);
