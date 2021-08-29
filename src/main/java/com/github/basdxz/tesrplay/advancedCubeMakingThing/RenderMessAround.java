@@ -26,11 +26,11 @@ public class RenderMessAround {
                 .renderMinU(renderMinX)
                 .renderMaxU(renderMaxX)
                 .renderMinV(renderMinZ)
-                .renderMinV(renderMaxZ)
+                .renderMaxV(renderMaxZ)
                 .build();
 
         Quad.quadBuilder()
-                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ, uvPos.maxV(), uvPos.maxV()))
+                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ, uvPos.maxU(), uvPos.maxV()))
                 .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ, uvPos.maxU(), uvPos.minV()))
                 .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ, uvPos.minU(), uvPos.minV()))
                 .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ, uvPos.minU(), uvPos.maxV()))
