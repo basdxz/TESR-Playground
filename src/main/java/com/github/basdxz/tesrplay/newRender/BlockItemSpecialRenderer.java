@@ -8,11 +8,11 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class MetaBlockRenderingHandler extends BlockRenderingHandler {
-    private static BlockRenderingHandler INSTANCE = new MetaBlockRenderingHandler();
+public class BlockItemSpecialRenderer extends BlockRenderingHandler {
+    private static BlockRenderingHandler INSTANCE = new BlockItemSpecialRenderer();
 
     public static void load() {
-        INSTANCE = new MetaBlockRenderingHandler();
+        INSTANCE = new BlockItemSpecialRenderer();
     }
 
     public static int getInstanceRenderId() {
