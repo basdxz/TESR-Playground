@@ -46,6 +46,7 @@ public final class ModelRenderer {
         Tessellator.instance.resumeDraw();
     }
 
+    //TODO make double and add disable/enable for alpha blend depending on need.
     private static void updateColorTint() {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
