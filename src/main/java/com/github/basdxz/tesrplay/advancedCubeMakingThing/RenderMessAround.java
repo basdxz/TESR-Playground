@@ -1,12 +1,15 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.BlendFunctions;
+import com.github.basdxz.tesrplay.newRender.TestBlock;
 import lombok.experimental.UtilityClass;
 import lombok.val;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.IIcon;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL14.glBlendEquation;
 
 @UtilityClass
 public class RenderMessAround {
@@ -18,15 +21,12 @@ public class RenderMessAround {
     private static final double renderMaxZ = 1.0D;
 
     public void renderFaceYPos(IIcon icon, double posX, double posY, double posZ) {
-        Tessellator.instance.pauseDraw();
-        Tessellator.instance.startDrawingQuads();
-
-        //1: Turn on the blending
+        icon = TestBlock.BOTTOM_GLASS;
+        glDisable(GL_ALPHA_TEST);
         glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-        //2: Use glColor4f() to set the Alpha component
-        //glColor4f(0F, 0F, 1.0F, 0.501F);
+
+        glBlendEquation(GL_MIN);
+        glBlendFunc(GL_ONE, GL_ONE);
 
         val quadMinX = posX + renderMinX;
         val quadMaxX = posX + renderMaxX;
@@ -45,8 +45,36 @@ public class RenderMessAround {
                         PosUV.builder().icon(icon).posU(renderMinX).posV(renderMaxZ).build()))
                 .tessellate();
 
-        Tessellator.instance.draw();
-        glDisable(GL_BLEND);
-        Tessellator.instance.resumeDraw();
+        //Tessellator.instance.draw();
+        //Tessellator.instance.startDrawingQuads();
+
+        //glBlendEquation(GL_FUNC_ADD);
+        //glEnable(GL_ALPHA_TEST);
+        //glDisable(GL_BLEND);
+    }
+
+    //Almost lensing, but does not delete the light I don't like.
+    private void blendModeOne() {
+        //1: Turn on the blending
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //2: Use glColor4f() to set the Alpha component
+        glColor4f(0F, 0F, 1.0F, 0.501F);
+    }
+
+    //Kinda looks like it would be awesome for special gemstones
+    private void blendModeTwo() {
+        //1: Turn on the blending
+        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
+        //2: Use glColor4f() to set the Alpha component
+        glColor4f(0F, 0F, 1.0F, 0.501F);
+    }
+
+    //Same as mode one, is it not blending because my source-dest alpha is zero? since color is set
+    //by glcolor and not a transclucent texture? I'll try that next
+    private void blendModeThree() {
+        //1: Turn on the blending
+        glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
+        //2: Use glColor4f() to set the Alpha component
+        glColor4f(0F, 0F, 1.0F, 0.501F);
     }
 }

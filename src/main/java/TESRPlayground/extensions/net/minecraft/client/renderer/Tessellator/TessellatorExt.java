@@ -8,6 +8,8 @@ import manifold.ext.rt.api.This;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 
+
+//Not working with Quad rendering (?)
 @Extension
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TessellatorExt {

@@ -1,6 +1,7 @@
 package com.github.basdxz.tesrplay.newRender.providers;
 
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.RenderMessAround;
+import com.github.basdxz.tesrplay.newRender.TestBlock;
 import lombok.val;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.init.Blocks;
@@ -14,8 +15,8 @@ public interface CubeRenderProvider extends RenderProvider {
         //Drawing.renderAllFaces(renderer, null, 0, 0, 0, Blocks.iron_block.getIcon(0, 0));
 
         //val icon = Blocks.stained_glass.getIcon(0, 9);
-        val icon = Blocks.stained_glass.getIcon(0, 9);
-        RenderMessAround.renderFaceYPos(icon, posX, posY, posZ);
+
+        RenderMessAround.renderFaceYPos(null, posX, posY, posZ);
 
         //posX = 0;
         //posY = 0;
