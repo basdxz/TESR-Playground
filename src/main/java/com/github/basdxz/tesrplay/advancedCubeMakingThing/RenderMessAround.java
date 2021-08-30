@@ -2,10 +2,7 @@ package com.github.basdxz.tesrplay.advancedCubeMakingThing;
 
 import lombok.experimental.UtilityClass;
 import lombok.val;
-import net.minecraft.block.Block;
 import net.minecraft.util.IIcon;
-
-import java.util.Random;
 
 @UtilityClass
 public class RenderMessAround {
@@ -16,26 +13,22 @@ public class RenderMessAround {
     private static final double renderMaxY = 1.0D;
     private static final double renderMaxZ = 1.0D;
 
-    public void renderFaceYPos(Block block, double posX, double posY, double posZ, IIcon icon) {
-        double quadMinX = posX + renderMinX;
-        double quadMaxX = posX + renderMaxX;
-        double quadMaxY = posY + renderMaxY;
-        double quadMinZ = posZ + renderMinZ;
-        double quadMaxZ = posZ + renderMaxZ;
-
-        val rand = new Random();
-        val rot = rand.nextInt(360);// fixme delete
-
-        val uvPosBottomLeft = new PosUV(icon, renderMaxX, renderMaxZ, rot);
-        val uvPosBottomRight = new PosUV(icon, renderMaxX, renderMinZ, rot);
-        val uvPosTopLeft = new PosUV(icon, renderMinX, renderMinZ, rot);
-        val uvPosTopRight = new PosUV(icon, renderMinX, renderMaxZ, rot);
+    public void renderFaceYPos(IIcon icon, double posX, double posY, double posZ) {
+        val quadMinX = posX + renderMinX;
+        val quadMaxX = posX + renderMaxX;
+        val quadMaxY = posY + renderMaxY;
+        val quadMinZ = posZ + renderMinZ;
+        val quadMaxZ = posZ + renderMaxZ;
 
         Quad.quadBuilder()
-                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ, uvPosBottomLeft))
-                .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ, uvPosBottomRight))
-                .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ, uvPosTopLeft))
-                .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ, uvPosTopRight))
+                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ,
+                        PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMaxZ).build()))
+                .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ,
+                        PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMinZ).build()))
+                .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ,
+                        PosUV.builder().icon(icon).posU(renderMinX).posV(renderMinZ).build()))
+                .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ,
+                        PosUV.builder().icon(icon).posU(renderMinX).posV(renderMaxZ).build()))
                 .tessellate();
     }
 }

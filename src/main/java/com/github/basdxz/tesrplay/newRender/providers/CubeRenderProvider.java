@@ -14,7 +14,7 @@ public interface CubeRenderProvider extends RenderProvider {
         //Drawing.renderAllFaces(renderer, null, 0, 0, 0, Blocks.iron_block.getIcon(0, 0));
 
         val icon = Blocks.lapis_ore.getIcon(0, 0);
-        RenderMessAround.renderFaceYPos(null, posX, posY, posZ, icon);
+        RenderMessAround.renderFaceYPos(icon, posX, posY, posZ);
 
         //posX = 0;
         //posY = 0;
