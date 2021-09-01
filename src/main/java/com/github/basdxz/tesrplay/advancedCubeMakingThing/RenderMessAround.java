@@ -1,15 +1,11 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.BlendFunctions;
-import com.github.basdxz.tesrplay.newRender.TestBlock;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.PosUV;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.Vertex;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.BlendableIcon;
 import lombok.experimental.UtilityClass;
 import lombok.val;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL14.glBlendEquation;
 
 @UtilityClass
 public class RenderMessAround {
@@ -20,61 +16,51 @@ public class RenderMessAround {
     private static final double renderMaxY = 1.0D;
     private static final double renderMaxZ = 1.0D;
 
-    public void renderFaceYPos(IIcon icon, double posX, double posY, double posZ) {
-        icon = TestBlock.BOTTOM_GLASS;
-        glDisable(GL_ALPHA_TEST);
-        glEnable(GL_BLEND);
+    public void renderFaceYPos(BlendableIcon icon, double posX, double posY, double posZ) {
+        StraightGLUtil.drawAndSettingWrapper(() -> {
+            icon.applyBlending();
 
-        glBlendEquation(GL_MIN);
-        glBlendFunc(GL_ONE, GL_ONE);
+            val quadMinX = posX + renderMinX;
+            val quadMaxX = posX + renderMaxX;
+            val quadMinY = posY + renderMinY;
+            val quadMaxY = posY + renderMaxY;
+            val quadMinZ = posZ + renderMinZ;
+            val quadMaxZ = posZ + renderMaxZ;
 
-        val quadMinX = posX + renderMinX;
-        val quadMaxX = posX + renderMaxX;
-        val quadMaxY = posY + renderMaxY;
-        val quadMinZ = posZ + renderMinZ;
-        val quadMaxZ = posZ + renderMaxZ;
+            top(icon, quadMinX, quadMaxX, quadMaxY, quadMinZ, quadMaxZ);
+            bottom(icon, quadMinX, quadMaxX, quadMinY, quadMinZ, quadMaxZ);
 
+
+        }, true);
+
+    }
+
+    private void top(BlendableIcon icon, double quadMinX, double quadMaxX, double quadMaxY, double quadMinZ, double quadMaxZ) {
         Quad.quadBuilder()
-                .bottomLeft(new Vertex(quadMaxX, quadMaxY, quadMaxZ,
+                .vertA(new Vertex(quadMinX, quadMaxY, quadMaxZ,
                         PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMaxZ).build()))
-                .bottomRight(new Vertex(quadMaxX, quadMaxY, quadMinZ,
+                .vertB(new Vertex(quadMaxX, quadMaxY, quadMaxZ,
                         PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMinZ).build()))
-                .topLeft(new Vertex(quadMinX, quadMaxY, quadMinZ,
+                .vertC(new Vertex(quadMaxX, quadMaxY, quadMinZ,
                         PosUV.builder().icon(icon).posU(renderMinX).posV(renderMinZ).build()))
-                .topRight(new Vertex(quadMinX, quadMaxY, quadMaxZ,
+                .vertD(new Vertex(quadMinX, quadMaxY, quadMinZ,
                         PosUV.builder().icon(icon).posU(renderMinX).posV(renderMaxZ).build()))
+                .reversed(false)
                 .tessellate();
-
-        //Tessellator.instance.draw();
-        //Tessellator.instance.startDrawingQuads();
-
-        //glBlendEquation(GL_FUNC_ADD);
-        //glEnable(GL_ALPHA_TEST);
-        //glDisable(GL_BLEND);
     }
 
-    //Almost lensing, but does not delete the light I don't like.
-    private void blendModeOne() {
-        //1: Turn on the blending
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //2: Use glColor4f() to set the Alpha component
-        glColor4f(0F, 0F, 1.0F, 0.501F);
+    private void bottom(BlendableIcon icon, double quadMinX, double quadMaxX, double quadMinY, double quadMinZ, double quadMaxZ) {
+        Quad.quadBuilder()
+                .vertA(new Vertex(quadMinX, quadMinY, quadMaxZ,
+                        PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMaxZ).build()))
+                .vertB(new Vertex(quadMaxX, quadMinY, quadMaxZ,
+                        PosUV.builder().icon(icon).posU(renderMaxX).posV(renderMinZ).build()))
+                .vertC(new Vertex(quadMaxX, quadMinY, quadMinZ,
+                        PosUV.builder().icon(icon).posU(renderMinX).posV(renderMinZ).build()))
+                .vertD(new Vertex(quadMinX, quadMinY, quadMinZ,
+                        PosUV.builder().icon(icon).posU(renderMinX).posV(renderMaxZ).build()))
+                .reversed(true)
+                .tessellate();
     }
 
-    //Kinda looks like it would be awesome for special gemstones
-    private void blendModeTwo() {
-        //1: Turn on the blending
-        glBlendFunc(GL_DST_COLOR, GL_SRC_COLOR);
-        //2: Use glColor4f() to set the Alpha component
-        glColor4f(0F, 0F, 1.0F, 0.501F);
-    }
-
-    //Same as mode one, is it not blending because my source-dest alpha is zero? since color is set
-    //by glcolor and not a transclucent texture? I'll try that next
-    private void blendModeThree() {
-        //1: Turn on the blending
-        glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
-        //2: Use glColor4f() to set the Alpha component
-        glColor4f(0F, 0F, 1.0F, 0.501F);
-    }
 }

@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing;
+package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
 import lombok.AllArgsConstructor;
 import net.minecraft.client.renderer.Tessellator;

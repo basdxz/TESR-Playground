@@ -1,5 +1,6 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing;
+package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.Rotation;
 import lombok.*;
 import lombok.experimental.Accessors;
 import net.minecraft.util.IIcon;

@@ -1,6 +1,10 @@
 package com.github.basdxz.tesrplay.newRender.providers;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendEquations;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendFuncs;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.defs.GLBlendFunc;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.RenderMessAround;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
 import com.github.basdxz.tesrplay.newRender.TestBlock;
 import lombok.val;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -14,9 +18,15 @@ public interface CubeRenderProvider extends RenderProvider {
         //Tessellator.instance.setColorOpaque_F(1, 1, 1);
         //Drawing.renderAllFaces(renderer, null, 0, 0, 0, Blocks.iron_block.getIcon(0, 0));
 
-        //val icon = Blocks.stained_glass.getIcon(0, 9);
+        //val icon = Blocks.stainedD_glass.getIcon(0, 9);
 
-        RenderMessAround.renderFaceYPos(null, posX, posY, posZ);
+        val woagGoag = MaterialTexture.builder()
+                .icon(TestBlock.RED_TINT)
+                .glBlendEquation(GLBlendEquations.MIN)
+                .glBlendFunc(GLBlendFuncs.ADDITIVE)
+                .build();
+
+        RenderMessAround.renderFaceYPos(woagGoag, posX, posY, posZ);
 
         //posX = 0;
         //posY = 0;
