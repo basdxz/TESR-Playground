@@ -18,6 +18,7 @@ public class TestBlock extends Block implements CubeRenderProvider {
     public static IIcon TEST_PATTERN;
     public static IIcon BOTTOM_GLASS;
     public static IIcon DARK_RED;
+    public static IIcon TEST_2;
 
     private final int renderType;
 
@@ -36,6 +37,7 @@ public class TestBlock extends Block implements CubeRenderProvider {
         TEST_PATTERN = iconRegister.registerIcon(MODID + ":pattern");
         BOTTOM_GLASS = iconRegister.registerIcon(MODID + ":bottom_glass");
         DARK_RED = iconRegister.registerIcon(MODID + ":dark_red");
+        TEST_2 = iconRegister.registerIcon(MODID + ":test_wonderful");
         this.blockIcon = TEST_PATTERN;
     }
 

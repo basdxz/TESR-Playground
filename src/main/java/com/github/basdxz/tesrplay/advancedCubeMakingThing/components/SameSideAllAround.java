@@ -9,11 +9,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 
+import static com.github.basdxz.tesrplay.newRender.TestBlock.*;
+
 public class SameSideAllAround implements LayeredSidedBlendableIcon{
     @Override
     public Iterable<BlendableIcon> getBlendableIconLayers(ForgeDirection side) {
         val list = new ArrayList<BlendableIcon>();
         list.add(MaterialTexture.builder()
+                //.icon(TEST_2)
                 .icon(Blocks.iron_ore.getIcon(0,0))
                 //.glBlendEquation(GLBlendEquations.MIN)
                 //.glBlendFunc(GLBlendFuncs.ADDITIVE)

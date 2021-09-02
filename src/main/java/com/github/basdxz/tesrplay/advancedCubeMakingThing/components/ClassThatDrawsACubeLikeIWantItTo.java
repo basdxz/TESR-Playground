@@ -73,10 +73,10 @@ public class ClassThatDrawsACubeLikeIWantItTo {
                     vertCUV = new PosUV(0, 1);
                     vertDUV = new PosUV(1, 1);
                 } else {
-                    vertAUV = new PosUV(1 - bounds.min().x(), 1 - bounds.max().z());
-                    vertBUV = new PosUV(1 - bounds.max().x(), 1 - bounds.max().z());
-                    vertCUV = new PosUV(1 - bounds.max().x(), 1 - bounds.min().z());
-                    vertDUV = new PosUV(1 - bounds.min().x(), 1 - bounds.min().z());
+                    vertAUV = new PosUV(1 - bounds.min().x(), 1 - bounds.max().y());
+                    vertBUV = new PosUV(1 - bounds.max().x(), 1 - bounds.max().y());
+                    vertCUV = new PosUV(1 - bounds.max().x(), 1 - bounds.min().y());
+                    vertDUV = new PosUV(1 - bounds.min().x(), 1 - bounds.min().y());
                 }
                 break;
             case SOUTH:
@@ -90,10 +90,10 @@ public class ClassThatDrawsACubeLikeIWantItTo {
                     vertCUV = new PosUV(1, 1);
                     vertDUV = new PosUV(0, 1);
                 } else {
-                    vertAUV = new PosUV(bounds.min().x(), 1 - bounds.max().z());
-                    vertBUV = new PosUV(bounds.max().x(), 1 - bounds.max().z());
-                    vertCUV = new PosUV(bounds.max().x(), 1 - bounds.min().z());
-                    vertDUV = new PosUV(bounds.min().x(), 1 - bounds.min().z());
+                    vertAUV = new PosUV(bounds.min().x(), 1 - bounds.max().y());
+                    vertBUV = new PosUV(bounds.max().x(), 1 - bounds.max().y());
+                    vertCUV = new PosUV(bounds.max().x(), 1 - bounds.min().y());
+                    vertDUV = new PosUV(bounds.min().x(), 1 - bounds.min().y());
                 }
                 isFlipped = true;
                 break;
