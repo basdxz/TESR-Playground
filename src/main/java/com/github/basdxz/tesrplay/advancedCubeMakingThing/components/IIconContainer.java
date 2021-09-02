@@ -1,7 +1,9 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
+import lombok.experimental.SuperBuilder;
 import net.minecraft.util.IIcon;
 
+@SuperBuilder
 public abstract class IIconContainer implements IIcon {
     private final IIcon icon;
     protected IIconContainer(IIcon icon) {

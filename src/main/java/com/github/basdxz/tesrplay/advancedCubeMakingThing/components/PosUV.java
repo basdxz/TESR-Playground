@@ -1,32 +1,35 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.Rotation;
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
+import lombok.val;
+import lombok.var;
 import net.minecraft.util.IIcon;
 import org.ejml.simple.SimpleMatrix;
 
 @Accessors(fluent = true)
-@Value
 public class PosUV {
     private static final double ICON_SCALE = 16.0D;
     private static final double CENTER_OFFSET = -0.5D;
 
-    double u;
-    double v;
+    @Getter
+    private final double u;
+    @Getter
+    private final double v;
 
     public PosUV(double u, double v) {
         this.u = u;
         this.v = v;
     }
 
-    @Builder
-    private PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad, Rotation rotOrd, boolean skipScale) {
+    public PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad) {
+        this(icon, posUV, rotRad, false);
+    }
+
+    public PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad, boolean skipScale) {
         var posU = clampUV(posUV.u());
         var posV = clampUV(posUV.v());
-
-        if (rotOrd != null)
-            rotRad = -rotOrd.getRad();
 
         if (rotRad != 0.0D) {
             val rotatedPosUV = rotate(posU, posV, rotRad, skipScale);

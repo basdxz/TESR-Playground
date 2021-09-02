@@ -1,6 +1,9 @@
 package com.github.basdxz.tesrplay.newRender;
 
-import com.github.basdxz.tesrplay.newRender.providers.CubeRenderProvider;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.SameSideAllAround;
+import com.github.basdxz.tesrplay.newRender.providers.CuboidRenderProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
 
 //public class TestBlock extends Block implements ModelRenderProvider {
-public class TestBlock extends Block implements CubeRenderProvider {
+public class TestBlock extends Block implements CuboidRenderProvider {
     public static IIcon RED_TINT;
     public static IIcon GREEN_TINT;
     public static IIcon BLUE_TINT;
@@ -78,6 +81,10 @@ public class TestBlock extends Block implements CubeRenderProvider {
         return false;
     }
 
+    @Override
+    public LayeredIcon getTextureLayers() {
+        return new SameSideAllAround(MaterialTexture.builder().icon(TEST_PATTERN).build());
+    }
 
     //@Override
     //public Model getModel() {

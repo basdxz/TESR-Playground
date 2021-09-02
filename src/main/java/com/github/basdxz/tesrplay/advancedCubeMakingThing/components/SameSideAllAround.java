@@ -1,26 +1,25 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendEquations;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendFuncs;
-import com.github.basdxz.tesrplay.newRender.TestBlock;
-import lombok.*;
-import net.minecraft.init.Blocks;
+import lombok.val;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 
-import static com.github.basdxz.tesrplay.newRender.TestBlock.*;
+public class SameSideAllAround implements LayeredIcon {
+    private final Iterable<BlendableIcon> layers;
 
-public class SameSideAllAround implements LayeredSidedBlendableIcon{
+    public SameSideAllAround(BlendableIcon layer) {
+        this.layers = getLayers(layer);
+    }
+
+    private static Iterable<BlendableIcon> getLayers(BlendableIcon layer) {
+        val layers = new ArrayList<BlendableIcon>();
+        layers.add(layer);
+        return layers;
+    }
+
     @Override
     public Iterable<BlendableIcon> getBlendableIconLayers(ForgeDirection side) {
-        val list = new ArrayList<BlendableIcon>();
-        list.add(MaterialTexture.builder()
-                //.icon(TEST_2)
-                .icon(Blocks.iron_ore.getIcon(0,0))
-                //.glBlendEquation(GLBlendEquations.MIN)
-                //.glBlendFunc(GLBlendFuncs.ADDITIVE)
-                .build());
-        return list;
+        return layers;
     }
 }

@@ -10,19 +10,21 @@ import static org.lwjgl.opengl.GL11.*;
 
 @UtilityClass
 public class StraightGLUtil {
-    public void drawAndSettingWrapper(Runnable runnable, boolean isAlphaPass) {
-        drawAndUnDraw();
+    public void drawAndSettingWrapper(Runnable runnable, boolean noDraw, boolean isAlphaPass) {
+        drawAndUnDraw(noDraw);
         runnable.run();
-        drawAndUnDraw();
-        restoreDefaults(isAlphaPass);
+        drawAndUnDraw(noDraw);
+        restoreDefaults(noDraw, isAlphaPass);
     }
 
-    public void drawAndUnDraw() {
+    public void drawAndUnDraw(boolean noDraw) {
+        if (noDraw) return;
         Tessellator.instance.draw();
         Tessellator.instance.startDrawingQuads();
     }
 
-    public void restoreDefaults(boolean isAlphaPass) {
+    public void restoreDefaults(boolean noDraw, boolean isAlphaPass) {
+        if (noDraw) return;
         if (isAlphaPass) {
             GLToggles.ALPHA_TEST.disable();
             GLToggles.BLEND.enable();
