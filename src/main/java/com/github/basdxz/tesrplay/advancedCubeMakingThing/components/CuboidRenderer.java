@@ -4,17 +4,28 @@ import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.Quad;
 import lombok.experimental.UtilityClass;
 import lombok.var;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @UtilityClass
 public class CuboidRenderer {
-    public void renderCube(PosXYZ posXYZ, CuboidBounds bounds, LayeredIcon shading) {
+    public void renderCube(Block block, PosXYZ posXYZ, CuboidBounds bounds, LayeredIcon shading) {
         for (ForgeDirection validDirection : ForgeDirection.VALID_DIRECTIONS)
-            renderSide(posXYZ, bounds, shading.getBlendableIconLayers(validDirection), validDirection);
+            renderSide(block, posXYZ, bounds, shading.getBlendableIconLayers(validDirection), validDirection);
     }
 
     //TODO: I hate this. It is very static and doesn't define the blocks in an expressive way.
-    private void renderSide(PosXYZ posXYZ, CuboidBounds bounds, Iterable<BlendableIcon> layers, ForgeDirection side) {
+    private void renderSide(Block block, PosXYZ posXYZ,
+                            CuboidBounds bounds,
+                            Iterable<BlendableIcon> layers,
+                            ForgeDirection side) {
+        if (block != null && !block.shouldSideBeRendered(Minecraft.getMinecraft().theWorld,
+                (int) posXYZ.x() + side.offsetX,
+                (int) posXYZ.y() + side.offsetY,
+                (int) posXYZ.z() + side.offsetZ, side.ordinal()))
+            return;
+
         PosXYZ vertAPos;
         PosXYZ vertBPos;
         PosXYZ vertCPos;
@@ -53,17 +64,17 @@ public class CuboidRenderer {
                 isFlipped = true;
                 break;
             case WEST:
-                vertAPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
-                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
-                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-                vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-                break;
-            case EAST:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
                 vertBPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
                 vertCPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
                 isFlipped = true;
+                break;
+            case EAST:
+                vertAPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
+                vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
                 break;
             default:
                 return;
@@ -119,19 +130,6 @@ public class CuboidRenderer {
                     break;
                 case WEST:
                     if (layer.doStretch()) {
-                        vertAUV = new PosUV(1, 0);
-                        vertBUV = new PosUV(0, 0);
-                        vertCUV = new PosUV(0, 1);
-                        vertDUV = new PosUV(1, 1);
-                    } else {
-                        vertCUV = new PosUV(1 - bounds.max().z(), 1 - bounds.min().y());
-                        vertDUV = new PosUV(1 - bounds.min().z(), 1 - bounds.min().y());
-                        vertAUV = new PosUV(1 - bounds.min().z(), 1 - bounds.max().y());
-                        vertBUV = new PosUV(1 - bounds.max().z(), 1 - bounds.max().y());
-                    }
-                    break;
-                case EAST:
-                    if (layer.doStretch()) {
                         vertAUV = new PosUV(0, 0);
                         vertBUV = new PosUV(1, 0);
                         vertCUV = new PosUV(1, 1);
@@ -141,6 +139,19 @@ public class CuboidRenderer {
                         vertCUV = new PosUV(bounds.max().z(), 1 - bounds.min().y());
                         vertBUV = new PosUV(bounds.max().z(), 1 - bounds.max().y());
                         vertAUV = new PosUV(bounds.min().z(), 1 - bounds.max().y());
+                    }
+                    break;
+                case EAST:
+                    if (layer.doStretch()) {
+                        vertAUV = new PosUV(1, 0);
+                        vertBUV = new PosUV(0, 0);
+                        vertCUV = new PosUV(0, 1);
+                        vertDUV = new PosUV(1, 1);
+                    } else {
+                        vertCUV = new PosUV(1 - bounds.max().z(), 1 - bounds.min().y());
+                        vertDUV = new PosUV(1 - bounds.min().z(), 1 - bounds.min().y());
+                        vertAUV = new PosUV(1 - bounds.min().z(), 1 - bounds.max().y());
+                        vertBUV = new PosUV(1 - bounds.max().z(), 1 - bounds.max().y());
                     }
                     break;
                 default:

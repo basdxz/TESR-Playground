@@ -1,7 +1,7 @@
 package com.github.basdxz.tesrplay.newRender.providers;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.RenderMessAround;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidRenderer;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.PosXYZ;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public interface CuboidRenderProvider extends RenderProvider {
     @Override
     default void renderWorldBlock(RenderBlocks renderer, IBlockAccess world, ForgeDirection direction, int posX, int posY, int posZ) {
-        RenderMessAround.cubeDrawingButRoundAboutWay(new PosXYZ(posX, posY, posZ), getBounds(), getTextureLayers());
+        CuboidRenderer.renderCube(getBlock(), new PosXYZ(posX, posY, posZ), getBounds(), getTextureLayers());
     }
 
     @Override

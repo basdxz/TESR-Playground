@@ -14,7 +14,8 @@ public enum GLBlendFuncs implements GLBlendFunc {
     ADDITIVE_DARK(GL_ONE, GL_ONE_MINUS_SRC_COLOR),
     OVERLAY_DARK(GL_SRC_COLOR, GL_ONE),
     ADDITIVE2(GL_SRC_ALPHA, GL_ONE),
-    INVERTED_ADD(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
+    INVERTED_ADD(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR),
+    LENS_FILTER(GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR);
 
     public final int sourceFactor;
     public final int destinationFactor;

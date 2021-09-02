@@ -6,9 +6,13 @@ import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.SameSideAllAround;
 import com.github.basdxz.tesrplay.newRender.providers.CuboidRenderProvider;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
@@ -64,20 +68,28 @@ public class TestBlock extends Block implements CuboidRenderProvider {
     //    return super.getIcon(p_149691_1_, p_149691_2_);
     //}
 
-
-    @Override
-    public boolean shouldSideBeRendered(IBlockAccess p_149646_1_, int p_149646_2_, int p_149646_3_, int p_149646_4_, int p_149646_5_) {
-        return true;
+    //Epic
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockAccess blockAccess, int posX, int posY, int posZ, int side) {
+        Block block = blockAccess.getBlock(posX, posY, posZ);
+        if (block == this) return false;
+        return super.shouldSideBeRendered(blockAccess, posX, posY, posZ, side);
     }
 
+    //FIXME Start here.
     @Override
     public boolean isOpaqueCube() {
         return false;
     }
 
+    //@Override
+    //public int getRenderType() {
+    //    return renderType;
+    //}
+
     @Override
-    public int getRenderType() {
-        return renderType;
+    public Block getBlock() {
+        return this;
     }
 
     @Override
@@ -90,9 +102,9 @@ public class TestBlock extends Block implements CuboidRenderProvider {
         Random rand = new Random();
 
         return new SameSideAllAround(MaterialTexture.builder()
-                .icon(TEST_PATTERN)
-                .glBlendEquation(GLBlendEquations.MIN)
-                .glBlendFunc(GLBlendFuncs.ADDITIVE)
+                .icon(RED_TINT)
+                //.glBlendEquation(GLBlendEquations.REVERSE_SUBTRACT)
+                //.glBlendFunc(GLBlendFuncs.ALPHA)
                 .hasAlpha(true)
                 //.noDraw(true)
                 .rotation(rand.nextDouble() * Math.PI)
