@@ -2,48 +2,64 @@ package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.Quad;
 import lombok.experimental.UtilityClass;
+import lombok.val;
+import lombok.var;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @UtilityClass
 public class ClassThatDrawsACubeLikeIWantItTo {
-    public void makeCube(CuboidBounds bounds, LayeredSidedBlendableIcon shading) {
+    public void makeCube(PosXYZ posXYZ, CuboidBounds bounds, LayeredSidedBlendableIcon shading) {
         for (ForgeDirection validDirection : ForgeDirection.VALID_DIRECTIONS)
-            drawSide(bounds, shading.getBlendableIconLayers(validDirection), validDirection);
+            drawSide(posXYZ, bounds, shading.getBlendableIconLayers(validDirection), validDirection);
     }
 
-    private void drawSide(CuboidBounds bounds, Iterable<BlendableIcon> layers, ForgeDirection side) {
-        PosXYZ vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-        PosXYZ vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-        PosXYZ vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-        PosXYZ vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-        boolean isFlipped = false;
+    //TODO: I hate this. It is very static and doesn't define the blocks in an expressive way.
+    private void drawSide(PosXYZ posXYZ, CuboidBounds bounds, Iterable<BlendableIcon> layers, ForgeDirection side) {
+        PosXYZ vertAPos;
+        PosXYZ vertBPos;
+        PosXYZ vertCPos;
+        PosXYZ vertDPos;
+        PosUV vertAUV;
+        PosUV vertBUV;
+        PosUV vertCUV;
+        PosUV vertDUV;
+        var isFlipped = false;
+        val squeezeUV = false;
 
-        PosUV vertAUV = new PosUV(0, 0);
-        PosUV vertBUV = new PosUV(0, 0);
-        PosUV vertCUV = new PosUV(0, 0);
-        PosUV vertDUV = new PosUV(0, 0);
-
-        //fixme add a scary default that crashes the game lmao
         switch (side) {
             case DOWN:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-                vertAUV = new PosUV(0, 0);
-                vertBUV = new PosUV(1, 0);
-                vertCUV = new PosUV(1, 1);
-                vertDUV = new PosUV(0, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(0, 0);
+                    vertBUV = new PosUV(1, 0);
+                    vertCUV = new PosUV(1, 1);
+                    vertDUV = new PosUV(0, 1);
+                } else {
+                    vertAUV = new PosUV(bounds.min().x(), bounds.min().z());
+                    vertBUV = new PosUV(bounds.max().x(), bounds.min().z());
+                    vertCUV = new PosUV(bounds.max().x(), bounds.max().z());
+                    vertDUV = new PosUV(bounds.min().x(), bounds.max().z());
+                }
                 break;
             case UP:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
-                vertCUV = new PosUV(1, 1);
-                vertBUV = new PosUV(1, 0);
-                vertAUV = new PosUV(0, 0);
-                vertDUV = new PosUV(0, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(0, 0);
+                    vertBUV = new PosUV(1, 0);
+                    vertCUV = new PosUV(1, 1);
+                    vertDUV = new PosUV(0, 1);
+                } else {
+                    vertAUV = new PosUV(bounds.min().x(), bounds.min().z());
+                    vertBUV = new PosUV(bounds.max().x(), bounds.min().z());
+                    vertCUV = new PosUV(bounds.max().x(), bounds.max().z());
+                    vertDUV = new PosUV(bounds.min().x(), bounds.max().z());
+                }
                 isFlipped = true;
                 break;
             case NORTH:
@@ -51,20 +67,34 @@ public class ClassThatDrawsACubeLikeIWantItTo {
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-                vertAUV = new PosUV(1, 0);
-                vertBUV = new PosUV(0, 0);
-                vertCUV = new PosUV(0, 1);
-                vertDUV = new PosUV(1, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(1, 0);
+                    vertBUV = new PosUV(0, 0);
+                    vertCUV = new PosUV(0, 1);
+                    vertDUV = new PosUV(1, 1);
+                } else {
+                    vertAUV = new PosUV(1 - bounds.min().x(), 1 - bounds.max().z());
+                    vertBUV = new PosUV(1 - bounds.max().x(), 1 - bounds.max().z());
+                    vertCUV = new PosUV(1 - bounds.max().x(), 1 - bounds.min().z());
+                    vertDUV = new PosUV(1 - bounds.min().x(), 1 - bounds.min().z());
+                }
                 break;
             case SOUTH:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-                vertAUV = new PosUV(0, 0);
-                vertBUV = new PosUV(1, 0);
-                vertCUV = new PosUV(1, 1);
-                vertDUV = new PosUV(0, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(0, 0);
+                    vertBUV = new PosUV(1, 0);
+                    vertCUV = new PosUV(1, 1);
+                    vertDUV = new PosUV(0, 1);
+                } else {
+                    vertAUV = new PosUV(bounds.min().x(), 1 - bounds.max().z());
+                    vertBUV = new PosUV(bounds.max().x(), 1 - bounds.max().z());
+                    vertCUV = new PosUV(bounds.max().x(), 1 - bounds.min().z());
+                    vertDUV = new PosUV(bounds.min().x(), 1 - bounds.min().z());
+                }
                 isFlipped = true;
                 break;
             case WEST:
@@ -72,23 +102,45 @@ public class ClassThatDrawsACubeLikeIWantItTo {
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-                vertAUV = new PosUV(1, 0);
-                vertBUV = new PosUV(0, 0);
-                vertCUV = new PosUV(0, 1);
-                vertDUV = new PosUV(1, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(1, 0);
+                    vertBUV = new PosUV(0, 0);
+                    vertCUV = new PosUV(0, 1);
+                    vertDUV = new PosUV(1, 1);
+                } else {
+                    vertCUV = new PosUV(1 - bounds.max().z(), 1 - bounds.min().y());
+                    vertDUV = new PosUV(1 - bounds.min().z(), 1 - bounds.min().y());
+                    vertAUV = new PosUV(1 - bounds.min().z(), 1 - bounds.max().y());
+                    vertBUV = new PosUV(1 - bounds.max().z(), 1 - bounds.max().y());
+                }
                 break;
             case EAST:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
                 vertBPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
                 vertCPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-                vertAUV = new PosUV(0, 0);
-                vertBUV = new PosUV(1, 0);
-                vertCUV = new PosUV(1, 1);
-                vertDUV = new PosUV(0, 1);
+                if (squeezeUV) {
+                    vertAUV = new PosUV(0, 0);
+                    vertBUV = new PosUV(1, 0);
+                    vertCUV = new PosUV(1, 1);
+                    vertDUV = new PosUV(0, 1);
+                } else {
+                    vertDUV = new PosUV(bounds.min().z(), 1 - bounds.min().y());
+                    vertCUV = new PosUV(bounds.max().z(), 1 - bounds.min().y());
+                    vertBUV = new PosUV(bounds.max().z(), 1 - bounds.max().y());
+                    vertAUV = new PosUV(bounds.min().z(), 1 - bounds.max().y());
+                }
                 isFlipped = true;
                 break;
+            default:
+                return;
         }
+
+        //fixme make this Manifold
+        vertAPos = vertAPos.add(posXYZ);
+        vertBPos = vertBPos.add(posXYZ);
+        vertCPos = vertCPos.add(posXYZ);
+        vertDPos = vertDPos.add(posXYZ);
 
         for (BlendableIcon layer : layers) {
             layer.applyBlending();

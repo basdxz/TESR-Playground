@@ -7,21 +7,13 @@ import lombok.val;
 
 @UtilityClass
 public class RenderMessAround {
-    private static final double renderMinX = 0.0D;
-    private static final double renderMinY = 0.0D;
-    private static final double renderMinZ = 0.0D;
-    private static final double renderMaxX = 1.0D;
-    private static final double renderMaxY = 1.0D;
-    private static final double renderMaxZ = 1.0D;
-
     public void cubeDrawingButRoundAboutWay(BlendableIcon icon, double posX, double posY, double posZ) {
         StraightGLUtil.drawAndSettingWrapper(() -> {
-            val bounds = new CuboidBounds(new PosXYZ(posX, posY, posZ), new PosXYZ(posX + 1, posY + 1, posZ + 1));
-            ClassThatDrawsACubeLikeIWantItTo.makeCube(bounds, new SameSideAllAround());
-
+            val posXYZ = new PosXYZ(posX, posY, posZ);
+            val bounds = new CuboidBounds(new PosXYZ(0.5, 0.5, 0.5), new PosXYZ(1, 1, 1));
+            //val bounds = new CuboidBounds(new PosXYZ(0, 0, 0), new PosXYZ(1, 1, 1));
+            //val bounds = new CuboidBounds(new PosXYZ(0, 0, 0), new PosXYZ(0.5, 0.5, 0.5));
+            ClassThatDrawsACubeLikeIWantItTo.makeCube(posXYZ, bounds, new SameSideAllAround());
         }, true);
-
     }
-
-
 }
