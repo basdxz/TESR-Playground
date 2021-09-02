@@ -156,8 +156,8 @@ public class CuboidRenderer {
                     .vertD(new Vertex(vertDPos, new PosUV(layer, vertDUV, layer.rotation())))
                     .reversed(isFlipped)
                     .tessellate();
-            StraightGLUtil.restoreDefaults(layer.noDraw(), layer.hasAlpha());
             StraightGLUtil.drawAndUnDraw(layer.noDraw());
+            StraightGLUtil.restoreDefaults(layer.noDraw(), layer.hasAlpha());
         }
     }
 }

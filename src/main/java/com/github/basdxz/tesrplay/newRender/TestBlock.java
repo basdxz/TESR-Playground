@@ -1,5 +1,7 @@
 package com.github.basdxz.tesrplay.newRender;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendEquations;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendFuncs;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.SameSideAllAround;
@@ -9,6 +11,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
+
+import java.util.Random;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
 
@@ -83,7 +87,16 @@ public class TestBlock extends Block implements CuboidRenderProvider {
 
     @Override
     public LayeredIcon getTextureLayers() {
-        return new SameSideAllAround(MaterialTexture.builder().icon(TEST_PATTERN).build());
+        Random rand = new Random();
+
+        return new SameSideAllAround(MaterialTexture.builder()
+                .icon(TEST_PATTERN)
+                .glBlendEquation(GLBlendEquations.MIN)
+                .glBlendFunc(GLBlendFuncs.ADDITIVE)
+                .hasAlpha(true)
+                //.noDraw(true)
+                .rotation(rand.nextDouble() * Math.PI)
+                .build());
     }
 
     //@Override
