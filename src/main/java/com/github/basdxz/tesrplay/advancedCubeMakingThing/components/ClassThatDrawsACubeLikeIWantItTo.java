@@ -13,52 +13,85 @@ public class ClassThatDrawsACubeLikeIWantItTo {
     }
 
     private void drawSide(CuboidBounds bounds, Iterable<BlendableIcon> layers, ForgeDirection side) {
-        var vertMinX = getVertMinX(bounds, side);
-        var vertMaxX = getVertMaxX(bounds, side);
-        var vertMinY = getVertMinY(bounds, side);
-        var vertMaxY = getVertMaxY(bounds, side);
-        var vertMinZ = getVertMinZ(bounds, side);
-        var vertMaxZ = getVertMaxZ(bounds, side);
-        var isReversed = false;
+        PosXYZ vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
+        PosXYZ vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
+        PosXYZ vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
+        PosXYZ vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
+        boolean isFlipped = false;
+        boolean doIRender = false;
+
+        double vertAU = 0;
+        double vertBU = 0;
+        double vertCU = 0;
+        double vertDU = 0;
+
+        double vertAV = 0;
+        double vertBV = 0;
+        double vertCV = 0;
+        double vertDV = 0;
+
+        //fixme add a scary default that crashes the game lmao
+        switch(side) {
+            case DOWN:
+                vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
+                vertAU = 0;
+                vertAV = 0;
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
+                vertBU = 1;
+                vertBV = 0;
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
+                vertCU = 1;
+                vertCV = 1;
+                vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
+                vertDU = 1;
+                vertDV = 0;
+                doIRender = true;
+                break;
+            case UP:
+                return;
+            case NORTH:
+                vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
+                vertAU = 1;
+                vertAV = 0;
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
+                vertBU = 0;
+                vertBV = 0;
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
+                vertCU = 0;
+                vertCV = 1;
+                vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
+                vertDU = 1;
+                vertDV = 1;
+                doIRender = true;
+                break;
+            case SOUTH:
+                return;
+            case WEST:
+                vertAPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
+                vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
+                //doIRender = true;
+                break;
+            case EAST:
+                return;
+        }
+
+        if (!doIRender) return;
 
         for (BlendableIcon layer : layers) {
             layer.applyBlending();
+            Quad.quadBuilder()
+                    .vertA(new Vertex(vertAPos.x(), vertAPos.y(), vertAPos.z(),
+                            PosUV.builder().icon(layer).posU(vertAU).posV(vertAV).build()))
+                    .vertB(new Vertex(vertBPos.x(), vertBPos.y(), vertBPos.z(),
+                            PosUV.builder().icon(layer).posU(vertBU).posV(vertBV).build()))
+                    .vertC(new Vertex(vertCPos.x(), vertCPos.y(), vertCPos.z(),
+                            PosUV.builder().icon(layer).posU(vertCU).posV(vertCV).build()))
+                    .vertD(new Vertex(vertDPos.x(), vertDPos.y(), vertDPos.z(),
+                            PosUV.builder().icon(layer).posU(vertDU).posV(vertDV).build()))
+                    .reversed(isFlipped)
+                    .tessellate();
         }
-    }
-
-    private double getVertMinX(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetX == 1)
-            return bounds.max().x();
-        return bounds.min().x();
-    }
-
-    private double getVertMaxX(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetX == -1)
-            return bounds.min().x();
-        return bounds.max().x();
-    }
-
-    private double getVertMinY(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetY == 1)
-            return bounds.max().y();
-        return bounds.min().y();
-    }
-
-    private double getVertMaxY(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetY == -1)
-            return bounds.min().y();
-        return bounds.max().y();
-    }
-
-    private double getVertMinZ(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetZ == 1)
-            return bounds.max().z();
-        return bounds.min().z();
-    }
-
-    private double getVertMaxZ(CuboidBounds bounds, ForgeDirection side) {
-        if (side.offsetZ == -1)
-            return bounds.min().z();
-        return bounds.max().z();
     }
 }

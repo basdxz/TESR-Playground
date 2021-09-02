@@ -2,13 +2,11 @@ package com.github.basdxz.tesrplay.newRender.providers;
 
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendEquations;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff.GLBlendFuncs;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.defs.GLBlendFunc;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.RenderMessAround;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
 import com.github.basdxz.tesrplay.newRender.TestBlock;
 import lombok.val;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -26,7 +24,7 @@ public interface CubeRenderProvider extends RenderProvider {
                 .glBlendFunc(GLBlendFuncs.ADDITIVE)
                 .build();
 
-        RenderMessAround.renderFaceYPos(woagGoag, posX, posY, posZ);
+        RenderMessAround.cubeDrawingButRoundAboutWay(woagGoag, posX, posY, posZ);
 
         //posX = 0;
         //posY = 0;
