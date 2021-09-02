@@ -12,34 +12,34 @@ public class PosUV {
     private static final double ICON_SCALE = 16.0D;
     private static final double CENTER_OFFSET = -0.5D;
 
-    double posU;
-    double posV;
+    double u;
+    double v;
+
+    public PosUV(double u, double v) {
+        this.u = u;
+        this.v = v;
+    }
 
     @Builder
-    private PosUV(@NonNull IIcon icon, double posU, double posV, double rotRad, Rotation rotOrd, boolean skipScale) {
-        posU = clampUV(posU);
-        posV = clampUV(posV);
+    private PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad, Rotation rotOrd, boolean skipScale) {
+        var posU = clampUV(posUV.u());
+        var posV = clampUV(posUV.v());
 
         if (rotOrd != null)
             rotRad = -rotOrd.getRad();
 
         if (rotRad != 0.0D) {
             val rotatedPosUV = rotate(posU, posV, rotRad, skipScale);
-            posU = rotatedPosUV.posU();
-            posV = rotatedPosUV.posV();
+            posU = rotatedPosUV.u();
+            posV = rotatedPosUV.v();
         }
 
-        this.posU = icon.getInterpolatedU(posU * ICON_SCALE);
-        this.posV = icon.getInterpolatedV(posV * ICON_SCALE);
+        this.u = icon.getInterpolatedU(posU * ICON_SCALE);
+        this.v = icon.getInterpolatedV(posV * ICON_SCALE);
     }
 
     private static double clampUV(double pos) {
         return Math.max(0.0D, Math.min(pos, 1.0D));
-    }
-
-    private PosUV(double posU, double posV) {
-        this.posU = posU;
-        this.posV = posV;
     }
 
     private static PosUV rotate(double posU, double posV, double rotRad, boolean skipScale) {

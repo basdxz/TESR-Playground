@@ -2,7 +2,6 @@ package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.Quad;
 import lombok.experimental.UtilityClass;
-import lombok.var;
 import net.minecraftforge.common.util.ForgeDirection;
 
 @UtilityClass
@@ -18,78 +17,86 @@ public class ClassThatDrawsACubeLikeIWantItTo {
         PosXYZ vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
         PosXYZ vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
         boolean isFlipped = false;
-        boolean doIRender = false;
 
-        double vertAU = 0;
-        double vertBU = 0;
-        double vertCU = 0;
-        double vertDU = 0;
-
-        double vertAV = 0;
-        double vertBV = 0;
-        double vertCV = 0;
-        double vertDV = 0;
+        PosUV vertAUV = new PosUV(0, 0);
+        PosUV vertBUV = new PosUV(0, 0);
+        PosUV vertCUV = new PosUV(0, 0);
+        PosUV vertDUV = new PosUV(0, 0);
 
         //fixme add a scary default that crashes the game lmao
-        switch(side) {
+        switch (side) {
             case DOWN:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-                vertAU = 0;
-                vertAV = 0;
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-                vertBU = 1;
-                vertBV = 0;
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-                vertCU = 1;
-                vertCV = 1;
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-                vertDU = 1;
-                vertDV = 0;
-                doIRender = true;
+                vertAUV = new PosUV(0, 0);
+                vertBUV = new PosUV(1, 0);
+                vertCUV = new PosUV(1, 1);
+                vertDUV = new PosUV(0, 1);
                 break;
             case UP:
-                return;
+                vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
+                vertDPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
+                vertCUV = new PosUV(1, 1);
+                vertBUV = new PosUV(1, 0);
+                vertAUV = new PosUV(0, 0);
+                vertDUV = new PosUV(0, 1);
+                isFlipped = true;
+                break;
             case NORTH:
                 vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
-                vertAU = 1;
-                vertAV = 0;
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
-                vertBU = 0;
-                vertBV = 0;
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-                vertCU = 0;
-                vertCV = 1;
                 vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-                vertDU = 1;
-                vertDV = 1;
-                doIRender = true;
+                vertAUV = new PosUV(1, 0);
+                vertBUV = new PosUV(0, 0);
+                vertCUV = new PosUV(0, 1);
+                vertDUV = new PosUV(1, 1);
                 break;
             case SOUTH:
-                return;
+                vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
+                vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
+                vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
+                vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
+                vertAUV = new PosUV(0, 0);
+                vertBUV = new PosUV(1, 0);
+                vertCUV = new PosUV(1, 1);
+                vertDUV = new PosUV(0, 1);
+                isFlipped = true;
+                break;
             case WEST:
                 vertAPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
                 vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
                 vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
                 vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-                //doIRender = true;
+                vertAUV = new PosUV(1, 0);
+                vertBUV = new PosUV(0, 0);
+                vertCUV = new PosUV(0, 1);
+                vertDUV = new PosUV(1, 1);
                 break;
             case EAST:
-                return;
+                vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
+                vertBPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
+                vertCPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
+                vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
+                vertAUV = new PosUV(0, 0);
+                vertBUV = new PosUV(1, 0);
+                vertCUV = new PosUV(1, 1);
+                vertDUV = new PosUV(0, 1);
+                isFlipped = true;
+                break;
         }
-
-        if (!doIRender) return;
 
         for (BlendableIcon layer : layers) {
             layer.applyBlending();
             Quad.quadBuilder()
-                    .vertA(new Vertex(vertAPos.x(), vertAPos.y(), vertAPos.z(),
-                            PosUV.builder().icon(layer).posU(vertAU).posV(vertAV).build()))
-                    .vertB(new Vertex(vertBPos.x(), vertBPos.y(), vertBPos.z(),
-                            PosUV.builder().icon(layer).posU(vertBU).posV(vertBV).build()))
-                    .vertC(new Vertex(vertCPos.x(), vertCPos.y(), vertCPos.z(),
-                            PosUV.builder().icon(layer).posU(vertCU).posV(vertCV).build()))
-                    .vertD(new Vertex(vertDPos.x(), vertDPos.y(), vertDPos.z(),
-                            PosUV.builder().icon(layer).posU(vertDU).posV(vertDV).build()))
+                    .vertA(new Vertex(vertAPos, PosUV.builder().icon(layer).posUV(vertAUV).build()))
+                    .vertB(new Vertex(vertBPos, PosUV.builder().icon(layer).posUV(vertBUV).build()))
+                    .vertC(new Vertex(vertCPos, PosUV.builder().icon(layer).posUV(vertCUV).build()))
+                    .vertD(new Vertex(vertDPos, PosUV.builder().icon(layer).posUV(vertDUV).build()))
                     .reversed(isFlipped)
                     .tessellate();
         }

@@ -5,9 +5,7 @@ import net.minecraft.client.renderer.Tessellator;
 
 @AllArgsConstructor
 public class Vertex {
-    private final double posX;
-    private final double posY;
-    private final double posZ;
+    private final PosXYZ posXYZ;
     private final PosUV posUV;
     //private final redAO;
     //private final greenAO;
@@ -15,6 +13,6 @@ public class Vertex {
     //private final brightnessAO;
 
     public void tessellate() {
-        Tessellator.instance.addVertexWithUV(posX, posY, posZ, posUV.posU(), posUV.posV());
+        Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 }
