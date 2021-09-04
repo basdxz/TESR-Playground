@@ -4,7 +4,6 @@ import lombok.Value;
 import lombok.experimental.Accessors;
 
 
-//TODO Replace with Vec3 etc
 @Accessors(fluent = true)
 @Value
 public class PosXYZ {
