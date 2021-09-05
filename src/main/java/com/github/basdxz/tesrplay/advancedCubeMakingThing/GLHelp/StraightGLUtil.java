@@ -21,8 +21,12 @@ public class StraightGLUtil {
         if (noDraw) return;
         Tessellator.instance.draw();
         Tessellator.instance.startDrawingQuads();
+
+        Tessellator.instance.setBrightness(0);
+        Tessellator.instance.setColorRGBA_F(1,1,1,1);
     }
 
+    //todo somethis is messed up here, no idea what.
     public void restoreDefaults(boolean noDraw, boolean isAlphaPass) {
         if (noDraw) return;
         if (isAlphaPass) {

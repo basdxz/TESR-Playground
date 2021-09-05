@@ -1,34 +1,53 @@
 package com.github.basdxz.tesrplay.AOScratch;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.Quad;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.*;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters;
 import lombok.val;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import static net.minecraftforge.common.util.ForgeDirection.UP;
-
+import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
+import static net.minecraftforge.common.util.ForgeDirection.*;
 
 //TODO: Relocate
 public class CuboidRenderer {
-    private final IBlockAccess blockAccess;
+    private static final CuboidBoundGetters[][][] vertPosMatrix = new CuboidBoundGetters[][][]{
+            {{MAX_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MIN_Z}, {MAX_X, MIN_Y, MIN_Z}},
+            {{MIN_X, MAX_Y, MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {MAX_X, MAX_Y, MIN_Z}, {MIN_X, MAX_Y, MIN_Z}},
+            {{MAX_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MIN_Z}, {MIN_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}},
+            {{MIN_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {MIN_X, MAX_Y, MAX_Z}},
+            {{MIN_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MAX_Z}, {MIN_X, MAX_Y, MAX_Z}, {MIN_X, MAX_Y, MIN_Z}},
+            {{MAX_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MAX_Z}},
+    };
+
+    private static final CuboidBoundGetters[][][] vertUVMatrix = new CuboidBoundGetters[][][]{
+            {{MAX_X_COMP, MAX_Z}, {MIN_X_COMP, MAX_Z}, {MIN_X_COMP, MIN_Z}, {MAX_X_COMP, MIN_Z}},
+            {{MIN_X, MAX_Z}, {MAX_X, MAX_Z}, {MAX_X, MIN_Z}, {MIN_X, MIN_Z}},
+            {{MAX_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MAX_Y_COMP}, {MAX_X_COMP, MAX_Y_COMP}},
+            {{MIN_X, MIN_Y_COMP}, {MAX_X, MIN_Y_COMP}, {MAX_X, MAX_Y_COMP}, {MIN_X, MAX_Y_COMP}},
+            {{MIN_Z, MIN_Y_COMP}, {MAX_Z, MIN_Y_COMP}, {MAX_Z, MAX_Y_COMP}, {MIN_Z, MAX_Y_COMP}},
+            {{MAX_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MAX_Y_COMP}, {MAX_Z_COMP, MAX_Y_COMP}},
+    };
+
     private final Block block;
     private final PosXYZ posXYZ;
     private final CuboidBounds bounds;
     private final LayeredIcon layeredIcon;
+    private final IBlockAccess blockAccess;
+    private final boolean ambientOcclusionEnabled;
+    private final int mixedBrightnessSelf;
 
-    private PosXYZ vertAPos;
-    private PosXYZ vertBPos;
-    private PosXYZ vertCPos;
-    private PosXYZ vertDPos;
-    private boolean isQuadFlipped;
+    private ForgeDirection faceDirection;
+
+    private final PosXYZ[] vertPos = new PosXYZ[]{new PosXYZ(), new PosXYZ(), new PosXYZ(), new PosXYZ()};
+
     private BlendableIcon layer;
-    private PosUV vertAUV;
-    private PosUV vertBUV;
-    private PosUV vertCUV;
-    private PosUV vertDUV;
+
+    private final PosUV[] vertUV = new PosUV[4];
 
     private int mixedBrightnessABCD;
 
@@ -64,252 +83,169 @@ public class CuboidRenderer {
     private float vertCAmbientOcclusionFactor;
     private float vertDAmbientOcclusionFactor;
 
-    private ColorRGBA vertAColorRGBA;
-    private ColorRGBA vertBColorRGBA;
-    private ColorRGBA vertCColorRGBA;
-    private ColorRGBA vertDColorRGBA;
+    private ColorRGBA vertAColorRGBA;//TODO Make final /w modifier
+    private ColorRGBA vertBColorRGBA;//TODO Make final /w modifier
+    private ColorRGBA vertCColorRGBA;//TODO Make final /w modifier
+    private ColorRGBA vertDColorRGBA;//TODO Make final /w modifier
 
     public CuboidRenderer(Block block, PosXYZ posXYZ, CuboidBounds bounds, LayeredIcon layeredIcon) {
-        blockAccess = getWorldAccess();
         this.block = block;
         this.posXYZ = posXYZ;
         this.bounds = bounds;
         this.layeredIcon = layeredIcon;
+        blockAccess = getWorldAccess();
+        ambientOcclusionEnabled = getAmbientOcclusionState();
+        mixedBrightnessSelf = getMixedBrightnessSelf();
     }
 
     private static IBlockAccess getWorldAccess() {
         return Minecraft.getMinecraft().theWorld;
     }
 
+    private static boolean getAmbientOcclusionState() {
+        return Minecraft.isAmbientOcclusionEnabled();
+    }
+
+    private int getMixedBrightnessSelf() {
+        return getMixedBrightnessForBlock(0, 0, 0);
+    }
+
     /*
-        -Brightness without AO
-        -Normal Map tesselator setting
-        -Tinting per layer
-        -Remove the isQuadFlipped variable
-        -Verify UV scaling still works
+        -Optimise blocks being placed over facings blocking light and running without AO
         -AO on the other 5 sides
-        -Swap ColorRGBA to a Java color object
-        -Swab PosXYZ to a java Pos3
+        -Scale Normal Facing by bounds
+        -Tinting per layer with 0-1.0 tining, where 0 means none and 1.0 means maxed out.
      */
     public void render() {
-        //if (shouldSideBeRendered(DOWN)) {
-        //    setVertXYZDown();
-        //    offsetVertXYZWithPosXYZ();
-        //    for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(DOWN)) {
-        //        setLayer(layer);
-        //        setVertUVDown();
-        //        drawQuad();
-        //    }
-        //}
-        if (shouldSideBeRendered(UP)) {
-            setVertXYZUp();
-            offsetVertXYZWithPosXYZ();
+        setFaceDirection(DOWN);
+        if (shouldSideBeRendered()) {
+            setVertPos();
             setMixedBrightnessTop();
             setVertBrightness();
             setAmbientOcclusionLightTop();
             setVertAmbientOcclusionFactors();
-            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(UP)) {
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
                 setLayer(layer);
-                setVertColorRGBAWithAmbientOcclusion();
-                setVertUVUp();
+                setVertColorRGBA();
+                setVertUV();
                 drawQuad();
             }
         }
-        //if (shouldSideBeRendered(NORTH)) {
-        //    setVertXYZNorth();
-        //    offsetVertXYZWithPosXYZ();
-        //    for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(NORTH)) {
-        //        setLayer(layer);
-        //        setVertUVNorth();
-        //        drawQuad();
-        //    }
-        //}
-        //if (shouldSideBeRendered(SOUTH)) {
-        //    setVertXYZSouth();
-        //    offsetVertXYZWithPosXYZ();
-        //    for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(SOUTH)) {
-        //        setLayer(layer);
-        //        setVertUVSouth();
-        //        drawQuad();
-        //    }
-        //}
-        //if (shouldSideBeRendered(WEST)) {
-        //    setVertXYZWest();
-        //    offsetVertXYZWithPosXYZ();
-        //    for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(WEST)) {
-        //        setLayer(layer);
-        //        setVertUVWest();
-        //        drawQuad();
-        //    }
-        //}
-        //if (shouldSideBeRendered(EAST)) {
-        //    setVertXYZEast();
-        //    offsetVertXYZWithPosXYZ();
-        //    for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(EAST)) {
-        //        setLayer(layer);
-        //        setVertUVEast();
-        //        drawQuad();
-        //    }
-        //}
+        setFaceDirection(UP);
+        if (shouldSideBeRendered()) {
+            setVertPos();
+            setMixedBrightnessTop();
+            setVertBrightness();
+            setAmbientOcclusionLightTop();
+            setVertAmbientOcclusionFactors();
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
+                setLayer(layer);
+                setVertColorRGBA();
+                setVertUV();
+                drawQuad();
+            }
+        }
+        setFaceDirection(NORTH);
+        if (shouldSideBeRendered()) {
+            setVertPos();
+            setMixedBrightnessTop();
+            setVertBrightness();
+            setAmbientOcclusionLightTop();
+            setVertAmbientOcclusionFactors();
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
+                setLayer(layer);
+                setVertColorRGBA();
+                setVertUV();
+                drawQuad();
+            }
+        }
+        setFaceDirection(SOUTH);
+        if (shouldSideBeRendered()) {
+            setVertPos();
+            setMixedBrightnessTop();
+            setVertBrightness();
+            setAmbientOcclusionLightTop();
+            setVertAmbientOcclusionFactors();
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
+                setLayer(layer);
+                setVertColorRGBA();
+                setVertUV();
+                drawQuad();
+            }
+        }
+        setFaceDirection(WEST);
+        if (shouldSideBeRendered()) {
+            setVertPos();
+            setMixedBrightnessTop();
+            setVertBrightness();
+            setAmbientOcclusionLightTop();
+            setVertAmbientOcclusionFactors();
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
+                setLayer(layer);
+                setVertColorRGBA();
+                setVertUV();
+                drawQuad();
+            }
+        }
+        setFaceDirection(EAST);
+        if (shouldSideBeRendered()) {
+            setVertPos();
+            setMixedBrightnessTop();
+            setVertBrightness();
+            setAmbientOcclusionLightTop();
+            setVertAmbientOcclusionFactors();
+            for (BlendableIcon layer : layeredIcon.getBlendableIconLayers(faceDirection)) {
+                setLayer(layer);
+                setVertColorRGBA();
+                setVertUV();
+                drawQuad();
+            }
+        }
     }
 
-    private boolean shouldSideBeRendered(ForgeDirection side) {
+    private void setFaceDirection(ForgeDirection side) {
+        faceDirection = side;
+    }
+
+    private boolean shouldSideBeRendered() {
         return block.shouldSideBeRendered(blockAccess,
-                (int) posXYZ.x() + side.offsetX,
-                (int) posXYZ.y() + side.offsetY,
-                (int) posXYZ.z() + side.offsetZ, side.ordinal());
+                (int) posXYZ.x() + faceDirection.offsetX,
+                (int) posXYZ.y() + faceDirection.offsetY,
+                (int) posXYZ.z() + faceDirection.offsetZ, faceDirection.ordinal());
     }
 
-    private void setVertXYZDown() {
-        vertAPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-        vertBPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-        vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-        vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-        isQuadFlipped = false;
-    }
-
-    private void setVertXYZUp() {
-        vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
-        vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
-        vertCPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
-        vertDPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
-        isQuadFlipped = false;
-    }
-
-    private void setVertXYZNorth() {
-        vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
-        vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
-        vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-        vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-        isQuadFlipped = false;
-    }
-
-    private void setVertXYZSouth() {
-        vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
-        vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
-        vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-        vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-        isQuadFlipped = true;
-    }
-
-    private void setVertXYZWest() {
-        vertAPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.min().z());
-        vertBPos = new PosXYZ(bounds.min().x(), bounds.max().y(), bounds.max().z());
-        vertCPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.max().z());
-        vertDPos = new PosXYZ(bounds.min().x(), bounds.min().y(), bounds.min().z());
-        isQuadFlipped = true;
-    }
-
-    private void setVertXYZEast() {
-        vertAPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.min().z());
-        vertBPos = new PosXYZ(bounds.max().x(), bounds.max().y(), bounds.max().z());
-        vertCPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.max().z());
-        vertDPos = new PosXYZ(bounds.max().x(), bounds.min().y(), bounds.min().z());
-        isQuadFlipped = false;
-    }
-
-    private void offsetVertXYZWithPosXYZ() {
-        vertAPos = vertAPos.add(posXYZ);
-        vertBPos = vertBPos.add(posXYZ);
-        vertCPos = vertCPos.add(posXYZ);
-        vertDPos = vertDPos.add(posXYZ);
+    private void setVertPos() {
+        for (int i = 0; i < vertPos.length; i++) {
+            vertPos[i].set(
+                    bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i][0]),
+                    bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i][1]),
+                    bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i][2]))
+                    .add(posXYZ);
+        }
     }
 
     private void setLayer(BlendableIcon layer) {
         this.layer = layer;
     }
 
-    private void setVertUVDown() {
-        if (layer.doStretch()) {
-            vertAUV = new PosUV(0, 0);
-            vertBUV = new PosUV(1, 0);
-            vertCUV = new PosUV(1, 1);
-            vertDUV = new PosUV(0, 1);
-        } else {
-            vertAUV = new PosUV(bounds.min().x(), bounds.min().z());
-            vertBUV = new PosUV(bounds.max().x(), bounds.min().z());
-            vertCUV = new PosUV(bounds.max().x(), bounds.max().z());
-            vertDUV = new PosUV(bounds.min().x(), bounds.max().z());
-        }
-    }
-
-    private void setVertUVUp() {
-        vertAUV = new PosUV(0, 1);
-        vertBUV = new PosUV(1, 1);
-        vertCUV = new PosUV(1, 0);
-        vertDUV = new PosUV(0, 0);
-        //if (layer.doStretch()) {
-        //    vertAUV = new PosUV(0, 0);
-        //    vertBUV = new PosUV(1, 0);
-        //    vertCUV = new PosUV(1, 1);
-        //    vertDUV = new PosUV(0, 1);
-        //} else {
-        //    vertAUV = new PosUV(bounds.min().x(), bounds.min().z());
-        //    vertBUV = new PosUV(bounds.max().x(), bounds.min().z());
-        //    vertCUV = new PosUV(bounds.max().x(), bounds.max().z());
-        //    vertDUV = new PosUV(bounds.min().x(), bounds.max().z());
-        //}
-    }
-
-    private void setVertUVNorth() {
-        if (layer.doStretch()) {
-            vertAUV = new PosUV(1, 0);
-            vertBUV = new PosUV(0, 0);
-            vertCUV = new PosUV(0, 1);
-            vertDUV = new PosUV(1, 1);
-        } else {
-            vertAUV = new PosUV(1 - bounds.min().x(), 1 - bounds.max().y());
-            vertBUV = new PosUV(1 - bounds.max().x(), 1 - bounds.max().y());
-            vertCUV = new PosUV(1 - bounds.max().x(), 1 - bounds.min().y());
-            vertDUV = new PosUV(1 - bounds.min().x(), 1 - bounds.min().y());
-        }
-    }
-
-    private void setVertUVSouth() {
-        if (layer.doStretch()) {
-            vertAUV = new PosUV(0, 0);
-            vertBUV = new PosUV(1, 0);
-            vertCUV = new PosUV(1, 1);
-            vertDUV = new PosUV(0, 1);
-        } else {
-            vertAUV = new PosUV(bounds.min().x(), 1 - bounds.max().y());
-            vertBUV = new PosUV(bounds.max().x(), 1 - bounds.max().y());
-            vertCUV = new PosUV(bounds.max().x(), 1 - bounds.min().y());
-            vertDUV = new PosUV(bounds.min().x(), 1 - bounds.min().y());
-        }
-    }
-
-    private void setVertUVWest() {
-        if (layer.doStretch()) {
-            vertAUV = new PosUV(0, 0);
-            vertBUV = new PosUV(1, 0);
-            vertCUV = new PosUV(1, 1);
-            vertDUV = new PosUV(0, 1);
-        } else {
-            vertDUV = new PosUV(bounds.min().z(), 1 - bounds.min().y());
-            vertCUV = new PosUV(bounds.max().z(), 1 - bounds.min().y());
-            vertBUV = new PosUV(bounds.max().z(), 1 - bounds.max().y());
-            vertAUV = new PosUV(bounds.min().z(), 1 - bounds.max().y());
-        }
-    }
-
-    private void setVertUVEast() {
-        if (layer.doStretch()) {
-            vertAUV = new PosUV(1, 0);
-            vertBUV = new PosUV(0, 0);
-            vertCUV = new PosUV(0, 1);
-            vertDUV = new PosUV(1, 1);
-        } else {
-            vertCUV = new PosUV(1 - bounds.max().z(), 1 - bounds.min().y());
-            vertDUV = new PosUV(1 - bounds.min().z(), 1 - bounds.min().y());
-            vertAUV = new PosUV(1 - bounds.min().z(), 1 - bounds.max().y());
-            vertBUV = new PosUV(1 - bounds.max().z(), 1 - bounds.max().y());
+    private void setVertUV() {
+        val face = faceDirection.ordinal();
+        for (int i = 0; i < vertUV.length; i++) {
+            if (layer.doStretch()) {
+                vertUV[i] = new PosUV(
+                        CuboidBounds.CUBE_BOUNDS.getPos(vertUVMatrix[face][i][0]),
+                        bounds.getPos(vertUVMatrix[face][i][1]));
+            } else {
+                vertUV[i] = new PosUV(
+                        bounds.getPos(vertUVMatrix[face][i][0]),
+                        bounds.getPos(vertUVMatrix[face][i][1]));
+            }
         }
     }
 
     private void setMixedBrightnessTop() {
-        if (isOpaqueCube(0, 1, 0)) {
-            mixedBrightnessABCD = getMixedBrightnessForBlock(0, 0, 0);
+        if (bounds.max().y() > 1.0D || isOpaqueCube(0, 1, 0) && ambientOcclusionEnabled) {
+            mixedBrightnessABCD = mixedBrightnessSelf;
         } else {
             mixedBrightnessABCD = getMixedBrightnessForBlock(0, 1, 0);
         }
@@ -336,7 +272,6 @@ public class CuboidRenderer {
                 (int) (posXYZ.z() + posZOffset));
     }
 
-
     private Block getBlockWithOffset(int posXOffset, int posYOffset, int posZOffset) {
         return blockAccess.getBlock(
                 (int) (posXYZ.x() + posXOffset),
@@ -345,24 +280,25 @@ public class CuboidRenderer {
     }
 
     private void setVertBrightness() {
-        vertABrightness = getBrightness(mixedBrightnessA, mixedBrightnessAB, mixedBrightnessAD, mixedBrightnessABCD);
-        vertBBrightness = getBrightness(mixedBrightnessB, mixedBrightnessAB, mixedBrightnessBC, mixedBrightnessABCD);
-        vertCBrightness = getBrightness(mixedBrightnessC, mixedBrightnessBC, mixedBrightnessCD, mixedBrightnessABCD);
-        vertDBrightness = getBrightness(mixedBrightnessD, mixedBrightnessCD, mixedBrightnessAD, mixedBrightnessABCD);
+        vertABrightness = mixBrightness(mixedBrightnessA, mixedBrightnessAB, mixedBrightnessAD, mixedBrightnessABCD);
+        vertBBrightness = mixBrightness(mixedBrightnessB, mixedBrightnessAB, mixedBrightnessBC, mixedBrightnessABCD);
+        vertCBrightness = mixBrightness(mixedBrightnessC, mixedBrightnessBC, mixedBrightnessCD, mixedBrightnessABCD);
+        vertDBrightness = mixBrightness(mixedBrightnessD, mixedBrightnessCD, mixedBrightnessAD, mixedBrightnessABCD);
     }
 
-    //todo name stuff better
-    public static int getBrightness(int ao1, int ao2, int ao3, int aoMin) {
-        if (ao1 == 0)
-            ao1 = aoMin;
-        if (ao2 == 0)
-            ao2 = aoMin;
-        if (ao3 == 0)
-            ao3 = aoMin;
-        return (ao1 + ao2 + ao3 + aoMin) / 4 & 0b111111110000000011111111;
+    public static int mixBrightness(int vert0Brightness, int vert1Brightness, int vert2Brightness, int quadBrightness) {
+        if (vert0Brightness == 0)
+            vert0Brightness = quadBrightness;
+        if (vert1Brightness == 0)
+            vert1Brightness = quadBrightness;
+        if (vert2Brightness == 0)
+            vert2Brightness = quadBrightness;
+        return (vert0Brightness + vert1Brightness + vert2Brightness + quadBrightness) / 4 & 0xFF00FF;
     }
 
     private void setAmbientOcclusionLightTop() {
+        if (!ambientOcclusionEnabled) return;
+
         ambientOcclusionLightABCD = AmbientOcclusionLight(0, 1, 0);
 
         ambientOcclusionLightAB = AmbientOcclusionLight(0, 1, 1);
@@ -381,6 +317,8 @@ public class CuboidRenderer {
     }
 
     private void setVertAmbientOcclusionFactors() {
+        if (!ambientOcclusionEnabled) return;
+
         vertAAmbientOcclusionFactor = (ambientOcclusionLightA + ambientOcclusionLightAB + ambientOcclusionLightAD
                 + ambientOcclusionLightABCD) / 4.0F;
         vertBAmbientOcclusionFactor = (ambientOcclusionLightB + ambientOcclusionLightAB + ambientOcclusionLightBC
@@ -391,26 +329,30 @@ public class CuboidRenderer {
                 + ambientOcclusionLightABCD) / 4.0F;
     }
 
-    private void setVertColorRGBAWithAmbientOcclusion() {
-        ColorRGBA colore = new ColorRGBA(1.0F, 1.0F, 1.0F, 1.0F);
-        vertAColorRGBA = colore.mult(vertAAmbientOcclusionFactor);
-        vertBColorRGBA = colore.mult(vertBAmbientOcclusionFactor);
-        vertCColorRGBA = colore.mult(vertCAmbientOcclusionFactor);
-        vertDColorRGBA = colore.mult(vertDAmbientOcclusionFactor);
+    private void setVertColorRGBA() {
+        vertAColorRGBA = layer.colorRGBA();
+        vertBColorRGBA = layer.colorRGBA();
+        vertCColorRGBA = layer.colorRGBA();
+        vertDColorRGBA = layer.colorRGBA();
+        if (!ambientOcclusionEnabled) return;
+
+        vertAColorRGBA = vertAColorRGBA.mult(vertAAmbientOcclusionFactor);
+        vertBColorRGBA = vertBColorRGBA.mult(vertBAmbientOcclusionFactor);
+        vertCColorRGBA = vertCColorRGBA.mult(vertCAmbientOcclusionFactor);
+        vertDColorRGBA = vertDColorRGBA.mult(vertDAmbientOcclusionFactor);
     }
 
     private void drawQuad() {
         //TODO Reset the tesselator lighting and colour each time
-        //StraightGLUtil.drawAndUnDraw(layer.noDraw());
+        StraightGLUtil.drawAndUnDraw(layer.noDraw());
         //layer.applyBlending(layer.noDraw());
         Quad.quadBuilder()
-                .vertA(new Vertex(vertAPos, new PosUV(layer, vertAUV, layer.rotation()), vertABrightness, vertAColorRGBA))
-                .vertB(new Vertex(vertBPos, new PosUV(layer, vertBUV, layer.rotation()), vertBBrightness, vertBColorRGBA))
-                .vertC(new Vertex(vertCPos, new PosUV(layer, vertCUV, layer.rotation()), vertCBrightness, vertCColorRGBA))
-                .vertD(new Vertex(vertDPos, new PosUV(layer, vertDUV, layer.rotation()), vertDBrightness, vertDColorRGBA))
-                .reversed(isQuadFlipped)
+                .vertA(new Vertex(vertPos[0], new PosUV(layer, vertUV[0], layer.rotation()), vertABrightness, vertAColorRGBA, faceDirection))
+                .vertB(new Vertex(vertPos[1], new PosUV(layer, vertUV[1], layer.rotation()), vertBBrightness, vertBColorRGBA, faceDirection))
+                .vertC(new Vertex(vertPos[2], new PosUV(layer, vertUV[2], layer.rotation()), vertCBrightness, vertCColorRGBA, faceDirection))
+                .vertD(new Vertex(vertPos[3], new PosUV(layer, vertUV[3], layer.rotation()), vertDBrightness, vertDColorRGBA, faceDirection))
                 .tessellate();
-        //StraightGLUtil.drawAndUnDraw(layer.noDraw());
+        StraightGLUtil.drawAndUnDraw(layer.noDraw());
         //StraightGLUtil.restoreDefaults(layer.noDraw(), layer.hasAlpha());
     }
 }

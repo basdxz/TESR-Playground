@@ -3,6 +3,7 @@ package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.defs.GLBlendEquation;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.defs.GLBlendFunc;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
@@ -19,6 +20,9 @@ public class MaterialTexture extends IIconContainer implements BlendableIcon {
     private final boolean doStretch;
     @Getter
     private final double rotation;
+    @Getter
+    @NonNull
+    private final ColorRGBA colorRGBA;
 
     @Override
     public void applyBlending(boolean noDraw) {

@@ -1,5 +1,6 @@
 package com.github.basdxz.tesrplay.newRender;
 
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.ColorRGBA;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.SameSideAllAround;
@@ -27,6 +28,7 @@ public class TestBlock extends Block implements CuboidRenderProvider {
     public static IIcon BOTTOM_GLASS;
     public static IIcon DARK_RED;
     public static IIcon TEST_2;
+    public static IIcon TEST_3;
 
     private final int renderType;
 
@@ -46,6 +48,7 @@ public class TestBlock extends Block implements CuboidRenderProvider {
         BOTTOM_GLASS = iconRegister.registerIcon(MODID + ":bottom_glass");
         DARK_RED = iconRegister.registerIcon(MODID + ":dark_red");
         TEST_2 = iconRegister.registerIcon(MODID + ":test_wonderful");
+        TEST_3 = iconRegister.registerIcon(MODID + ":test_tasteful");
         this.blockIcon = BOTTOM_GLASS;
     }
 
@@ -68,10 +71,10 @@ public class TestBlock extends Block implements CuboidRenderProvider {
         //return false;
     }
 
-    //@Override
-    //public int getRenderType() {
-    //    return renderType;
-    //}
+    @Override
+    public int getRenderType() {
+        return renderType;
+    }
 
     @Override
     public Block getBlock() {
@@ -89,11 +92,13 @@ public class TestBlock extends Block implements CuboidRenderProvider {
 
         return new SameSideAllAround(MaterialTexture.builder()
                 .icon(Blocks.iron_ore.getIcon(0, 0))
+                //.icon(TEST_3)
                 //.glBlendEquation(GLBlendEquations.REVERSE_SUBTRACT)
                 //.glBlendFunc(GLBlendFuncs.ALPHA)
                 //.hasAlpha(true)
                 //.noDraw(true)
                 //.rotation(rand.nextDouble() * Math.PI)
+                .colorRGBA(new ColorRGBA(1.0F, 1.0F, 1.0F, 1.0F))
                 .build());
     }
 
