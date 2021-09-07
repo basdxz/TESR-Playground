@@ -2,17 +2,19 @@ package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
 import net.minecraft.util.IIcon;
 
-//TODO implement glow
+//TODO: Blending should be provided as a Runnable
 public interface BlendableIcon extends IIcon {
-    void applyBlending(boolean noDraw);
-
     boolean doStretch();
+
+    double rotation();
+
+    boolean skipScale();
+
+    ColorRGBA colorRGBA();
 
     boolean hasAlpha();
 
     boolean noDraw();
 
-    double rotation();
-
-    ColorRGBA colorRGBA();
+    void applyBlending(boolean noDraw);
 }

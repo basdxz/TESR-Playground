@@ -15,7 +15,7 @@ public class CuboidBounds {
     private final PosXYZ min;
     private final PosXYZ max;
 
-    public enum CuboidBoundGetters {
+    public enum CuboidBoundGetters implements BiFunction<PosXYZ, PosXYZ, Double> {
         MIN_X((min, max) -> min.x()),
         MIN_X_COMP((min, max) -> 1 - min.x()),
         MAX_X((min, max) -> max.x()),
@@ -36,9 +36,21 @@ public class CuboidBounds {
         CuboidBoundGetters(BiFunction<PosXYZ, PosXYZ, Double> biFunction) {
             this.biFunction = biFunction;
         }
+
+        @Override
+        public Double apply(PosXYZ posXYZ, PosXYZ posXYZ2) {
+            return biFunction.apply(posXYZ, posXYZ2);
+        }
+    }
+
+    public double[] getPos(CuboidBoundGetters... getter) {
+        double[] posArray = new double[getter.length];
+        for (int i = 0; i < posArray.length; i++)
+            posArray[i] = getPos(getter[i]);
+        return posArray;
     }
 
     public double getPos(CuboidBoundGetters getter) {
-        return getter.biFunction.apply(min, max);
+        return getter.apply(min, max);
     }
 }

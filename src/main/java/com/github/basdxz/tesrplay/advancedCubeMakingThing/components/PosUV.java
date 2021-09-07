@@ -1,59 +1,51 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.val;
-import lombok.var;
 import net.minecraft.util.IIcon;
 import org.ejml.simple.SimpleMatrix;
 
+import static com.github.basdxz.tesrplay.TESRPlayground.*;
+
 @Accessors(fluent = true)
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PosUV {
     private static final double ICON_SCALE = 16.0D;
     private static final double CENTER_OFFSET = -0.5D;
 
-    @Getter
-    private final double u;
-    @Getter
-    private final double v;
+    private double u;
+    private double v;
 
-    public PosUV(double u, double v) {
-        this.u = u;
-        this.v = v;
+    public PosUV set(double... uv) {
+        if (uv.length != 2)
+            throw new IllegalArgumentException("PosUV Set method expects array length 2");
+        u = uv[U];
+        v = uv[V];
+        return this;
     }
 
-    public PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad) {
-        this(icon, posUV, rotRad, false);
-    }
-
-    public PosUV(@NonNull IIcon icon, @NonNull PosUV posUV, double rotRad, boolean skipScale) {
-        var posU = clampUV(posUV.u());
-        var posV = clampUV(posUV.v());
-
-        if (rotRad != 0.0D) {
-            val rotatedPosUV = rotate(posU, posV, rotRad, skipScale);
-            posU = rotatedPosUV.u();
-            posV = rotatedPosUV.v();
-        }
-
-        this.u = icon.getInterpolatedU(posU * ICON_SCALE);
-        this.v = icon.getInterpolatedV(posV * ICON_SCALE);
-    }
-
-    private static double clampUV(double pos) {
-        return Math.max(0.0D, Math.min(pos, 1.0D));
-    }
-
-    private static PosUV rotate(double posU, double posV, double rotRad, boolean skipScale) {
-        var posMatrix = getPosMatrix(posU, posV);
+    public PosUV rotate(double rotRad, boolean skipScale) {
+        var posMatrix = getPosMatrix(u, v);
 
         posMatrix = offsetMatrixToCenter(posMatrix);
         posMatrix = rotateMatrix(posMatrix, rotRad);
         posMatrix = scaleMatrix(posMatrix, rotRad, skipScale);
         posMatrix = offsetMatrixFromCenter(posMatrix);
 
-        return new PosUV(posMatrix.get(0), posMatrix.get(1));
+        u = posMatrix.get(U);
+        v = posMatrix.get(V);
+        return this;
+    }
+
+    public void mapToAtlas(@NonNull IIcon icon) {
+        u = icon.getInterpolatedU(clampUV(u) * ICON_SCALE);
+        v = icon.getInterpolatedV(clampUV(v) * ICON_SCALE);
+    }
+
+    private static double clampUV(double pos) {
+        return Math.max(0.0D, Math.min(pos, 1.0D));
     }
 
     private static SimpleMatrix getPosMatrix(double posU, double posV) {

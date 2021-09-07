@@ -16,6 +16,28 @@ public class TESRPlayground {
     public static final String NAME = "TESR Playground";
     public static final String VERSION = "@version@";
 
+    public static final int X = 0;
+    public static final int Y = 1;
+    public static final int Z = 2;
+
+    public static final int U = 0;
+    public static final int V = 1;
+
+    public static final int ABCD = 0;
+    public static final int A = 1;
+    public static final int AB = 2;
+    public static final int B = 3;
+    public static final int BC = 4;
+    public static final int C = 5;
+    public static final int CD = 6;
+    public static final int D = 7;
+    public static final int AD = 8;
+
+    public static final int AO0 = 0;
+    public static final int AO1 = 1;
+    public static final int A02 = 2;
+    public static final int AO3 = 3;
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
         Models.load();
