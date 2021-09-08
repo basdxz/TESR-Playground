@@ -12,9 +12,11 @@ public interface BlendableIcon extends IIcon {
 
     ColorRGBA colorRGBA();
 
+    boolean flatTint();
+
     boolean hasAlpha();
 
     boolean noDraw();
 
-    void applyBlending(boolean noDraw);
+    void applyBlending();
 }

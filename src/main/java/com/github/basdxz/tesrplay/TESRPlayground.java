@@ -9,6 +9,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import lombok.val;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = TESRPlayground.MODID, name = TESRPlayground.NAME, version = TESRPlayground.VERSION)
 public class TESRPlayground {
@@ -40,6 +41,8 @@ public class TESRPlayground {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(new EvenBundle());
+
         Models.load();
         BlockItemSpecialRenderer.load();
         val testBlock = new TestBlock(BlockItemSpecialRenderer.getInstanceRenderId());

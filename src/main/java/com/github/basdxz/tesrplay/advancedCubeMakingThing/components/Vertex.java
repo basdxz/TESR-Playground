@@ -1,18 +1,20 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.val;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.*;
-import static com.github.basdxz.tesrplay.TESRPlayground.ABCD;
 import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.MAX_Y_COMP;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,13 +22,13 @@ public class Vertex {
     private final PosXYZ posXYZ = new PosXYZ();
     private final PosUV posUV = new PosUV();
     private int brightness;
-    private ColorRGBA colorRGBA;
+    private final ColorRGBA colorRGBA = new ColorRGBA();
     private ForgeDirection direction;
 
-    public void tessellate() {
+    private void tessellate() {
         Tessellator.instance.setBrightness(brightness);
         Tessellator.instance.setColorRGBA_F(colorRGBA.r(), colorRGBA.g(), colorRGBA.b(), colorRGBA.a());
-        //Tessellator.instance.setNormal(direction.offsetX, direction.offsetY, direction.offsetZ);
+        //Tessellator.instance.setNormal(0, -1, 0);
         Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 
@@ -37,7 +39,7 @@ public class Vertex {
                 {{MAX_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MIN_Z}, {MIN_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}},
                 {{MIN_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {MIN_X, MAX_Y, MAX_Z}},
                 {{MIN_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MAX_Z}, {MIN_X, MAX_Y, MAX_Z}, {MIN_X, MAX_Y, MIN_Z}},
-                {{MAX_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MAX_Z}},
+                {{MAX_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MAX_Z}}
         };
 
         private static final CuboidBounds.CuboidBoundGetters[][][] vertUVMatrix = new CuboidBounds.CuboidBoundGetters[][][]{
@@ -46,87 +48,82 @@ public class Vertex {
                 {{MAX_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MAX_Y_COMP}, {MAX_X_COMP, MAX_Y_COMP}},
                 {{MIN_X, MIN_Y_COMP}, {MAX_X, MIN_Y_COMP}, {MAX_X, MAX_Y_COMP}, {MIN_X, MAX_Y_COMP}},
                 {{MIN_Z, MIN_Y_COMP}, {MAX_Z, MIN_Y_COMP}, {MAX_Z, MAX_Y_COMP}, {MIN_Z, MAX_Y_COMP}},
-                {{MAX_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MAX_Y_COMP}, {MAX_Z_COMP, MAX_Y_COMP}},
+                {{MAX_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MAX_Y_COMP}, {MAX_Z_COMP, MAX_Y_COMP}}
         };
 
         private static final int[][][] vertBrightnessAndAOScratchMatrix = new int[][][]{
+                {{0, -1, 0}, {1, -1, -1}, {0, -1, -1}, {-1, -1, -1}, {-1, -1, 0}, {-1, -1, 1}, {0, -1, 1}, {1, -1, 1}, {1, -1, 0}},
                 {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
+                {{0, 0, -1}, {1, -1, -1}, {0, -1, -1}, {-1, -1, -1}, {-1, 0, -1}, {-1, 1, -1}, {0, 1, -1}, {1, 1, -1}, {1, 0, -1}},
+                {{0, 0, 1}, {-1, -1, 1}, {0, -1, 1}, {1, -1, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {-1, 1, 1}, {-1, 0, 1}},
+                {{-1, 0, 0}, {-1, -1, -1}, {-1, -1, 0}, {-1, -1, 1}, {-1, 0, 1}, {-1, 1, 1}, {-1, 1, 0}, {-1, 1, -1}, {-1, 0, -1}},
+                {{1, 0, 0}, {1, -1, 1}, {1, -1, 0}, {1, -1, -1}, {1, 0, -1}, {1, 1, -1}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}}
         };
 
         private static final int[][] vertBrightnessAndAOMatrix = new int[][]{
                 {A, AB, AD, ABCD}, {B, AB, BC, ABCD}, {C, BC, CD, ABCD}, {D, CD, AD, ABCD}
         };
 
+        private static final float[] vertTintMatrix = new float[]{0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F};
+
         private final List<Vertex> vertices = Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex());
+
+        private IBlockAccess blockAccess;
+
+        private Block block;
         private CuboidBounds bounds;
         private PosXYZ posXYZ;
-        private IBlockAccess blockAccess;
-        private boolean ambientOcclusionEnabled;
-        private Block block;
+
         private ForgeDirection faceDirection;
-        private BlendableIcon icon;
+        private BlendableIcon layer;
 
         private final int[] mixedBrightnessScratch = new int[9];
         private final float[] ambientOcclusionLightScratch = new float[9];
         private final float[] vertAmbientOcclusionFactor = new float[4];
 
-        public void setBlockAccess(IBlockAccess blockAccess) {
+        public void setBlock(IBlockAccess blockAccess, Block block, CuboidBounds bounds, PosXYZ posXYZ) {
             this.blockAccess = blockAccess;
-        }
-
-        public void setAmbientOcclusionEnabled(boolean ambientOcclusionEnabled) {
-            this.ambientOcclusionEnabled = ambientOcclusionEnabled;
-        }
-
-        public void setBlock(Block block) {
             this.block = block;
-        }
-
-        public void setBounds(CuboidBounds bounds) {
             this.bounds = bounds;
-        }
-
-        public void setPosXYZ(PosXYZ posXYZ) {
             this.posXYZ = posXYZ;
         }
 
-        public void setFace(ForgeDirection faceDirection) {
-            this.faceDirection = faceDirection;
+        private static boolean skipAmbientOcclusion() {
+            return !Minecraft.isAmbientOcclusionEnabled();
         }
 
-        public void setVertPosXYZ() {
-            for (int i = 0; i < vertices.size(); i++)
-                vertices.get(i).posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ);
-        }
-
-        public void setIcon(BlendableIcon icon) {
-            this.icon = icon;
-        }
-
-        public void setVertPosUV() {
-            val uvBounds = icon.doStretch() ? CuboidBounds.CUBE_BOUNDS : bounds;
-            for (int i = 0; i < vertices.size(); i++)
-                vertices.get(i).posUV
-                        .set(uvBounds.getPos(vertUVMatrix[faceDirection.ordinal()][i]))
-                        .rotate(icon.rotation(), icon.skipScale())
-                        .mapToAtlas(icon);
-        }
-
-        public void setBrightness() {
+        public void preRender(ForgeDirection faceDirection) {
+            setFace(faceDirection);
+            setVertPosXYZ();
             setMixedBrightness();
             setVertBrightness();
             setAmbientOcclusionLight();
             setVertAmbientOcclusionFactors();
         }
 
+        private void setFace(ForgeDirection faceDirection) {
+            this.faceDirection = faceDirection;
+        }
+
+        private void setVertPosXYZ() {
+            IntStream.range(0, vertices.size()).forEach(i ->
+                    vertices.get(i).posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ));
+        }
+
         private void setMixedBrightness() {
-            for (int i = 0; i < mixedBrightnessScratch.length; i++)
-                mixedBrightnessScratch[i] = getMixedBrightnessForBlock(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]);
+            if (skipAmbientOcclusion()) return;
+            IntStream.range(0, mixedBrightnessScratch.length).forEach(i -> mixedBrightnessScratch[i]
+                    = getMixedBrightnessForBlock(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]));
+        }
+
+        private void setVertBrightness() {
+            if (skipAmbientOcclusion()) {
+                vertices.forEach(vertex -> vertex.brightness =
+                        getMixedBrightnessForBlock(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][ABCD]));
+            } else {
+                IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).brightness
+                        = mixBrightness(vertBrightnessAndAOMatrix[i]));
+            }
         }
 
         private int getMixedBrightnessForBlock(int... posOffset) {
@@ -136,11 +133,6 @@ public class Vertex {
                     (int) (posXYZ.x() + posOffset[X]),
                     (int) (posXYZ.y() + posOffset[Y]),
                     (int) (posXYZ.z() + posOffset[Z]));
-        }
-
-        private void setVertBrightness() {
-            for (int i = 0; i < vertices.size(); i++)
-                vertices.get(i).brightness = mixBrightness(vertBrightnessAndAOMatrix[i]);
         }
 
         private int mixBrightness(int... ao) {
@@ -154,8 +146,9 @@ public class Vertex {
         }
 
         private void setAmbientOcclusionLight() {
-            for (int i = 0; i < mixedBrightnessScratch.length; i++)
-                ambientOcclusionLightScratch[i] = AmbientOcclusionLight(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]);
+            if (skipAmbientOcclusion()) return;
+            IntStream.range(0, ambientOcclusionLightScratch.length).forEach(i -> ambientOcclusionLightScratch[i]
+                    = AmbientOcclusionLight(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]));
         }
 
         private float AmbientOcclusionLight(int... posOffset) {
@@ -172,6 +165,7 @@ public class Vertex {
         }
 
         private void setVertAmbientOcclusionFactors() {
+            if (skipAmbientOcclusion()) return;
             for (int i = 0; i < vertAmbientOcclusionFactor.length; i++)
                 vertAmbientOcclusionFactor[i] = averageAmbientOcclusionLight(vertBrightnessAndAOMatrix[i]);
         }
@@ -183,20 +177,36 @@ public class Vertex {
                     .mapToDouble(i -> ambientOcclusionLightScratch[i]).average().orElse(0);
         }
 
-        public void setColorRGBA() {
-            vertices.forEach(vertex -> vertex.colorRGBA = icon.colorRGBA());
-
-            if (!ambientOcclusionEnabled)
-                return;
-
-            for (int i = 0; i < vertices.size(); i++)
-                vertices.get(i).colorRGBA = vertices.get(i).colorRGBA.mult(vertAmbientOcclusionFactor[i]);
+        public void render(BlendableIcon layer) {
+            setLayer(layer);
+            setColorRGBA();
+            setVertPosUV();
+            setNormalDirection();
+            tessellate();
         }
 
-        public void setNormalDirection() {
+        private void setLayer(BlendableIcon layer) {
+            this.layer = layer;
         }
 
-        public void tessellate() {
+        private void setColorRGBA() {
+            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).colorRGBA
+                    .set(layer.colorRGBA().mult((layer.flatTint() ? 1.0F : vertTintMatrix[faceDirection.ordinal()]) *
+                            (skipAmbientOcclusion() ? 1.0F : vertAmbientOcclusionFactor[i]))));
+        }
+
+        private void setVertPosUV() {
+            val uvBounds = layer.doStretch() ? CuboidBounds.CUBE_BOUNDS : bounds;
+            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).posUV
+                    .set(uvBounds.getPos(Vertex4D.vertUVMatrix[faceDirection.ordinal()][i]))
+                    .rotate(layer.rotation(), layer.skipScale())
+                    .mapToAtlas(layer));
+        }
+
+        private void setNormalDirection() {
+        }
+
+        private void tessellate() {
             vertices.forEach(Vertex::tessellate);
         }
     }
