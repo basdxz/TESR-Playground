@@ -20,9 +20,6 @@ public class CuboidRenderer {
     private LayeredIcon layeredIcon;
     private IBlockAccess blockAccess;
 
-    /*
-        -Scale Normal Facing by bounds
-     */
     public void render(Block block, PosXYZ posXYZ, CuboidBounds bounds, LayeredIcon layeredIcon) {
         init(block, posXYZ, bounds, layeredIcon);
         for (ForgeDirection direction : VALID_DIRECTIONS) {

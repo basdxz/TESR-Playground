@@ -23,12 +23,12 @@ public class Vertex {
     private final PosUV posUV = new PosUV();
     private int brightness;
     private final ColorRGBA colorRGBA = new ColorRGBA();
-    private ForgeDirection direction;
+    private final PosXYZ posNormal = new PosXYZ();
 
     private void tessellate() {
         Tessellator.instance.setBrightness(brightness);
         Tessellator.instance.setColorRGBA_F(colorRGBA.r(), colorRGBA.g(), colorRGBA.b(), colorRGBA.a());
-        //Tessellator.instance.setNormal(0, -1, 0);
+        Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
         Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 
@@ -65,6 +65,9 @@ public class Vertex {
         };
 
         private static final float[] vertTintMatrix = new float[]{0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F};
+
+        private static final CuboidBounds.CuboidBoundGetters[][] vertNormalMatrix = new CuboidBounds.CuboidBoundGetters[][]{
+                {ZERO, MIN_Y, ZERO}, {ZERO, MAX_Y, ZERO}, {ZERO, ZERO, MIN_Z}, {ZERO, ZERO, MAX_Z}, {MIN_X, ZERO, ZERO}, {MAX_X, ZERO, ZERO}};
 
         private final List<Vertex> vertices = Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex());
 
@@ -205,6 +208,8 @@ public class Vertex {
         }
 
         private void setNormalDirection() {
+            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).posNormal.set(
+                    bounds.getPos(vertNormalMatrix[faceDirection.ordinal()])));
         }
 
         private void tessellate() {

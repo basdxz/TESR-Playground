@@ -16,6 +16,8 @@ public class CuboidBounds {
     private final PosXYZ max;
 
     public enum CuboidBoundGetters implements BiFunction<PosXYZ, PosXYZ, Double> {
+        ZERO((min, max) -> 0.0D),
+
         MIN_X((min, max) -> min.x()),
         MIN_X_COMP((min, max) -> 1 - min.x()),
         MAX_X((min, max) -> max.x()),
