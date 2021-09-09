@@ -19,8 +19,4 @@ public class ChaosEmerald extends BaseBlock implements ModelRenderProvider {
         return null;
     }
 
-    @Override
-    public Block getBlock() {
-        return null;
-    }
 }

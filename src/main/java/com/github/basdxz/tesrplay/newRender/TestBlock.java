@@ -77,17 +77,12 @@ public class TestBlock extends Block implements CuboidRenderProvider {
     }
 
     @Override
-    public Block getBlock() {
-        return this;
-    }
-
-    @Override
     public boolean renderAsNormalBlock() {
         return true;
     }
 
     @Override
-    public LayeredIcon getTextureLayers() {
+    public LayeredIcon getTextureLayers(int metadata) {
         Random rand = new Random();
 
         return new SameSideAllAround(MaterialTexture.builder()

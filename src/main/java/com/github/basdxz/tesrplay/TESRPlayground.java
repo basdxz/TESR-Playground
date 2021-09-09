@@ -39,6 +39,11 @@ public class TESRPlayground {
     public static final int A02 = 2;
     public static final int AO3 = 3;
 
+    public static final int RED = 0;
+    public static final int GREEN = 1;
+    public static final int BLUE = 2;
+    public static final int ALPHA = 3;
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new EvenBundle());

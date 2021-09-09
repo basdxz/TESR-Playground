@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.*;
 import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
+import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.MIN_Z_INV;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,11 +68,14 @@ public class Vertex {
         private static final float[] vertTintMatrix = new float[]{0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F};
 
         private static final CuboidBounds.CuboidBoundGetters[][] vertNormalMatrix = new CuboidBounds.CuboidBoundGetters[][]{
-                {ZERO, MIN_Y, ZERO}, {ZERO, MAX_Y, ZERO}, {ZERO, ZERO, MIN_Z}, {ZERO, ZERO, MAX_Z}, {MIN_X, ZERO, ZERO}, {MAX_X, ZERO, ZERO}};
+                {ZERO, MIN_Y_INV, ZERO}, {ZERO, MAX_Y, ZERO}, {ZERO, ZERO, MIN_Z_INV}, {ZERO, ZERO, MAX_Z}, {MIN_X_INV, ZERO, ZERO}, {MAX_X, ZERO, ZERO}};
+
+        private static final int itemLighting = 0xF000F;
 
         private final List<Vertex> vertices = Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex());
 
         private IBlockAccess blockAccess;
+        private boolean renderingAsItem;
 
         private Block block;
         private CuboidBounds bounds;
@@ -85,14 +89,15 @@ public class Vertex {
         private final float[] vertAmbientOcclusionFactor = new float[4];
 
         public void setBlock(IBlockAccess blockAccess, Block block, CuboidBounds bounds, PosXYZ posXYZ) {
-            this.blockAccess = blockAccess;
+            renderingAsItem = blockAccess == null;
             this.block = block;
             this.bounds = bounds;
+            this.blockAccess = blockAccess;
             this.posXYZ = posXYZ;
         }
 
-        private static boolean skipAmbientOcclusion() {
-            return !Minecraft.isAmbientOcclusionEnabled();
+        private boolean skipAmbientOcclusion() {
+            return renderingAsItem || !Minecraft.isAmbientOcclusionEnabled();
         }
 
         public void preRender(ForgeDirection faceDirection) {
@@ -122,7 +127,9 @@ public class Vertex {
         private void setVertBrightness() {
             if (skipAmbientOcclusion()) {
                 vertices.forEach(vertex -> vertex.brightness =
-                        getMixedBrightnessForBlock(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][ABCD]));
+                        renderingAsItem ? itemLighting :
+                                getMixedBrightnessForBlock(
+                                        vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][ABCD]));
             } else {
                 IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).brightness
                         = mixBrightness(vertBrightnessAndAOMatrix[i]));
@@ -195,7 +202,7 @@ public class Vertex {
         private void setColorRGBA() {
             int bound = vertices.size();
             IntStream.range(0, bound).forEach(i -> vertices.get(i).colorRGBA.set(layer.colorRGBA())
-                    .mult((layer.flatTint() ? 1.0F : vertTintMatrix[faceDirection.ordinal()])
+                    .mult((layer.flatTint() || renderingAsItem ? 1.0F : vertTintMatrix[faceDirection.ordinal()])
                             * (skipAmbientOcclusion() ? 1.0F : vertAmbientOcclusionFactor[i])));
         }
 

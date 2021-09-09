@@ -1,30 +1,27 @@
 package com.github.basdxz.tesrplay.newRender.providers;
 
-import com.github.basdxz.tesrplay.AOScratch.CuboidRenderer;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds;
+import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidRenderer;
 import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.PosXYZ;
-import lombok.var;
-import net.minecraft.client.renderer.RenderBlocks;
+import lombok.val;
+import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public interface CuboidRenderProvider extends RenderProvider {
     @Override
-    default void renderWorldBlock(RenderBlocks renderer, IBlockAccess world, ForgeDirection direction, int posX, int posY, int posZ) {
-        CuboidRenderer.render(getBlock(), new PosXYZ(posX, posY, posZ), getBounds(), getTextureLayers());
+    default void renderWorldBlock(IBlockAccess world, int posX, int posY, int posZ, Block block) {
+        val metadata = world.getBlockMetadata(posX, posY, posZ);
+        CuboidRenderer.renderWorldBlock(world, posX, posY, posZ, block, getBounds(), getTextureLayers(metadata));
     }
 
     @Override
-    default void renderInventoryBlock(RenderBlocks renderer) {
+    default void renderInventoryBlock(Block block, int metadata) {
+        CuboidRenderer.renderInventoryBlock(block, getBounds(), getTextureLayers(metadata));
     }
 
-    LayeredIcon getTextureLayers();
+    LayeredIcon getTextureLayers(int metadata);
 
     default CuboidBounds getBounds() {
-        var bound = CuboidBounds.CUBE_BOUNDS;
-        //bound = new CuboidBounds(new PosXYZ(0, 0, 0), new PosXYZ(1, 0.8, 0.8));
-        //bound = new CuboidBounds(new PosXYZ(0, 0.2, 0.2), new PosXYZ(1, 1, 1));
-        return bound;
+        return CuboidBounds.CUBE_BOUNDS;
     }
 }

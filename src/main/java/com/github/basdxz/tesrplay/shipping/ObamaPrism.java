@@ -19,9 +19,4 @@ public class ObamaPrism extends BaseBlock implements ModelRenderProvider {
     public Model getModel() {
         return null;
     }
-
-    @Override
-    public Block getBlock() {
-        return null;
-    }
 }

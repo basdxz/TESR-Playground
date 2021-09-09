@@ -20,16 +20,19 @@ public class CuboidBounds {
 
         MIN_X((min, max) -> min.x()),
         MIN_X_COMP((min, max) -> 1 - min.x()),
+        MIN_X_INV((min, max) -> min.x() - 1),
         MAX_X((min, max) -> max.x()),
         MAX_X_COMP((min, max) -> 1 - max.x()),
 
         MIN_Y((min, max) -> min.y()),
         MIN_Y_COMP((min, max) -> 1 - min.y()),
+        MIN_Y_INV((min, max) -> min.y() - 1),
         MAX_Y((min, max) -> max.y()),
         MAX_Y_COMP((min, max) -> 1 - max.y()),
 
         MIN_Z((min, max) -> min.z()),
         MIN_Z_COMP((min, max) -> 1 - min.z()),
+        MIN_Z_INV((min, max) -> min.z() - 1),
         MAX_Z((min, max) -> max.z()),
         MAX_Z_COMP((min, max) -> 1 - max.z());
 

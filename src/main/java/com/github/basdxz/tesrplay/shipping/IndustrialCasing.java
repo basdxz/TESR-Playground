@@ -18,12 +18,7 @@ public class IndustrialCasing extends BaseBlock implements CuboidRenderProvider 
     }
 
     @Override
-    public LayeredIcon getTextureLayers() {
-        return null;
-    }
-
-    @Override
-    public Block getBlock() {
+    public LayeredIcon getTextureLayers(int metadata) {
         return null;
     }
 }

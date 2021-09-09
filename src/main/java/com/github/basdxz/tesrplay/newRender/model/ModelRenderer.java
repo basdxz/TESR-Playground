@@ -5,13 +5,15 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 
+//TODO Compact and make it depend on the GL Util class
+//TODO add rotation capability in some meaninful way, perhaps have the interface feed a direction?
+//TODO When rotation is handled, make sure all three axis' are involved so that it looks it's best.
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ModelRenderer {
     private static final int CHUNK_LENGTH = 16;
     private static final float CHUNK_RATIO = 1.0F / CHUNK_LENGTH;
 
     public static void renderWorldBlock(@NonNull Model model, ForgeDirection direction, int posX, int posY, int posZ) {
-        //TODO Implement direction to ZY rotation
         renderBuilder(model).blockPosX(posX).blockPosY(posY).blockPosZ(posZ).run();
     }
 
