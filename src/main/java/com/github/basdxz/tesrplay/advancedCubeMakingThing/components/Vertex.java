@@ -190,9 +190,10 @@ public class Vertex {
         }
 
         private void setColorRGBA() {
-            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).colorRGBA
-                    .set(layer.colorRGBA().mult((layer.flatTint() ? 1.0F : vertTintMatrix[faceDirection.ordinal()]) *
-                            (skipAmbientOcclusion() ? 1.0F : vertAmbientOcclusionFactor[i]))));
+            int bound = vertices.size();
+            IntStream.range(0, bound).forEach(i -> vertices.get(i).colorRGBA.set(layer.colorRGBA())
+                    .mult((layer.flatTint() ? 1.0F : vertTintMatrix[faceDirection.ordinal()])
+                            * (skipAmbientOcclusion() ? 1.0F : vertAmbientOcclusionFactor[i])));
         }
 
         private void setVertPosUV() {

@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Minecraft Client" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="GradleStart" />
+    <module name="TESR-Playground.main" />
+    <option name="PROGRAM_PARAMETERS" value="--tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.hodgepodge.json" />
+    <option name="VM_PARAMETERS" value="-Xmx6G -Xms256M -Dfml.coreMods.load=com.mitchej123.hodgepodge.core.HodgepodgeMixinPlugin" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run" />
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

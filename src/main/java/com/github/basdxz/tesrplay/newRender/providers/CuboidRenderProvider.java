@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 public interface CuboidRenderProvider extends RenderProvider {
     @Override
     default void renderWorldBlock(RenderBlocks renderer, IBlockAccess world, ForgeDirection direction, int posX, int posY, int posZ) {
-        new CuboidRenderer(getBlock(), new PosXYZ(posX, posY, posZ), getBounds(), getTextureLayers()).render();
+        CuboidRenderer.render(getBlock(), new PosXYZ(posX, posY, posZ), getBounds(), getTextureLayers());
     }
 
     @Override
