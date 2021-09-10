@@ -1,6 +1,5 @@
 package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import net.minecraft.block.Block;
@@ -10,29 +9,28 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.*;
 import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.MIN_Z_INV;
 
-@AllArgsConstructor
 @NoArgsConstructor
 public class Vertex {
-    private final PosXYZ posXYZ = new PosXYZ();
-    private final PosUV posUV = new PosUV();
+    private boolean hasBrightness;
     private int brightness;
     private final ColorRGBA colorRGBA = new ColorRGBA();
+    private final PosXYZ posXYZ = new PosXYZ();
     private final PosXYZ posNormal = new PosXYZ();
+    private final PosUV posUV = new PosUV();
 
     private void tessellate() {
-        Tessellator.instance.setBrightness(brightness);
+        if (hasBrightness) Tessellator.instance.setBrightness(brightness);
         Tessellator.instance.setColorRGBA_F(colorRGBA.r(), colorRGBA.g(), colorRGBA.b(), colorRGBA.a());
         Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
         Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 
+    @NoArgsConstructor
     public static class Vertex4D {
         private static final CuboidBounds.CuboidBoundGetters[][][] vertPosMatrix = new CuboidBounds.CuboidBoundGetters[][][]{
                 {{MAX_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MIN_Z}, {MAX_X, MIN_Y, MIN_Z}},
@@ -70,9 +68,7 @@ public class Vertex {
         private static final CuboidBounds.CuboidBoundGetters[][] vertNormalMatrix = new CuboidBounds.CuboidBoundGetters[][]{
                 {ZERO, MIN_Y_INV, ZERO}, {ZERO, MAX_Y, ZERO}, {ZERO, ZERO, MIN_Z_INV}, {ZERO, ZERO, MAX_Z}, {MIN_X_INV, ZERO, ZERO}, {MAX_X, ZERO, ZERO}};
 
-        private static final int itemLighting = 0xF000F;
-
-        private final List<Vertex> vertices = Arrays.asList(new Vertex(), new Vertex(), new Vertex(), new Vertex());
+        private final Vertex[] vertices = new Vertex[]{new Vertex(), new Vertex(), new Vertex(), new Vertex()};
 
         private IBlockAccess blockAccess;
         private boolean renderingAsItem;
@@ -114,8 +110,8 @@ public class Vertex {
         }
 
         private void setVertPosXYZ() {
-            IntStream.range(0, vertices.size()).forEach(i ->
-                    vertices.get(i).posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ));
+            IntStream.range(0, vertices.length).forEach(i ->
+                    vertices[i].posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ));
         }
 
         private void setMixedBrightness() {
@@ -125,15 +121,13 @@ public class Vertex {
         }
 
         private void setVertBrightness() {
-            if (skipAmbientOcclusion()) {
-                vertices.forEach(vertex -> vertex.brightness =
-                        renderingAsItem ? itemLighting :
-                                getMixedBrightnessForBlock(
-                                        vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][ABCD]));
-            } else {
-                IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).brightness
-                        = mixBrightness(vertBrightnessAndAOMatrix[i]));
-            }
+            IntStream.range(0, vertices.length).forEach(i -> {
+                vertices[i].hasBrightness = !renderingAsItem;
+                if (renderingAsItem) return;
+                vertices[i].brightness = skipAmbientOcclusion()
+                        ? getMixedBrightnessForBlock(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][ABCD])
+                        : mixBrightness(vertBrightnessAndAOMatrix[i]);
+            });
         }
 
         private int getMixedBrightnessForBlock(int... posOffset) {
@@ -200,27 +194,26 @@ public class Vertex {
         }
 
         private void setColorRGBA() {
-            int bound = vertices.size();
-            IntStream.range(0, bound).forEach(i -> vertices.get(i).colorRGBA.set(layer.colorRGBA())
+            IntStream.range(0, vertices.length).forEach(i -> vertices[i].colorRGBA.set(layer.colorRGBA())
                     .mult((layer.flatTint() || renderingAsItem ? 1.0F : vertTintMatrix[faceDirection.ordinal()])
                             * (skipAmbientOcclusion() ? 1.0F : vertAmbientOcclusionFactor[i])));
         }
 
         private void setVertPosUV() {
             val uvBounds = layer.doStretch() ? CuboidBounds.CUBE_BOUNDS : bounds;
-            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).posUV
+            IntStream.range(0, vertices.length).forEach(i -> vertices[i].posUV
                     .set(uvBounds.getPos(Vertex4D.vertUVMatrix[faceDirection.ordinal()][i]))
                     .rotate(layer.rotation(), layer.skipScale())
                     .mapToAtlas(layer));
         }
 
         private void setNormalDirection() {
-            IntStream.range(0, vertices.size()).forEach(i -> vertices.get(i).posNormal.set(
+            IntStream.range(0, vertices.length).forEach(i -> vertices[i].posNormal.set(
                     bounds.getPos(vertNormalMatrix[faceDirection.ordinal()])));
         }
 
         private void tessellate() {
-            vertices.forEach(Vertex::tessellate);
+            IntStream.range(0, vertices.length).forEach(i -> vertices[i].tessellate());
         }
     }
 }
