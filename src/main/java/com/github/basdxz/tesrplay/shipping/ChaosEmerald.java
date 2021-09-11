@@ -11,7 +11,7 @@ import net.minecraft.block.material.Material;
  */
 public class ChaosEmerald extends BaseBlock implements ModelRenderProvider {
     public ChaosEmerald(Material material) {
-        super(material);
+        super(material,0);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.github.basdxz.tesrplay.newRender.model;
 import lombok.*;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil.*;
+import static com.github.basdxz.tesrplay.newRender.commonGL.GLUtils.*;
 
 //TODO Copy the pattern from cuboid renderer w.r.t. variables
 //TODO add rotation capability in some meaninful way, perhaps have the interface feed a direction?

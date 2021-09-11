@@ -12,7 +12,7 @@ import net.minecraft.block.material.Material;
  */
 public class ObamaPrism extends BaseBlock implements ModelRenderProvider {
     public ObamaPrism(Material material) {
-        super(material);
+        super(material,0);
     }
 
     @Override

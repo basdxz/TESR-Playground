@@ -1,9 +1,9 @@
-package com.github.basdxz.tesrplay.newRender;
+package com.github.basdxz.tesrplay.shipping;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.ColorRGBA;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.MaterialTexture;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.SameSideAllAround;
+import com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA;
+import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
+import com.github.basdxz.tesrplay.newRender.cuboid.MaterialTexture;
+import com.github.basdxz.tesrplay.newRender.cuboid.SameSideAllAround;
 import com.github.basdxz.tesrplay.newRender.providers.CuboidRenderProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

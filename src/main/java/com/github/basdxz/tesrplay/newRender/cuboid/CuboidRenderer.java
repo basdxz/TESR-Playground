@@ -1,13 +1,13 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
+package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import lombok.experimental.UtilityClass;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
 
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil.glTranslate;
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.StraightGLUtil.glYRotate;
+import static com.github.basdxz.tesrplay.newRender.commonGL.GLUtils.*;
 import static net.minecraftforge.common.util.ForgeDirection.VALID_DIRECTIONS;
 
 //TODO Implement safe rendering
@@ -29,13 +29,15 @@ public class CuboidRenderer {
     }
 
     public void renderInventoryBlock(Block block, CuboidBounds bounds, LayeredIcon layeredIcon) {
-        initInventoryBlock(block, bounds, layeredIcon);
 
-        Tessellator.instance.startDrawingQuads();
-        glTranslate(-0.5);
+        initInventoryBlock(block, bounds, layeredIcon);
+        glColor();
+        GL11.glPushMatrix();
+        glTranslate(-0.5D);
         glYRotate(90D);
         render();
-        Tessellator.instance.draw();
+        GL11.glPopMatrix();
+
     }
 
     private void initWorldBlock(IBlockAccess world, int posX, int posY, int posZ,
@@ -59,12 +61,14 @@ public class CuboidRenderer {
     }
 
     private void render() {
+        Tessellator.instance.pauseDraw();
         for (ForgeDirection direction : VALID_DIRECTIONS) {
             if (shouldSideBeSkipped(direction)) continue;
             quadVertices.preRender(direction);
             for (BlendableIcon layer : CuboidRenderer.layeredIcon.getBlendableIconLayers(direction))
                 quadVertices.render(layer);
         }
+        Tessellator.instance.resumeDraw();
     }
 
     private boolean shouldSideBeSkipped(ForgeDirection direction) {

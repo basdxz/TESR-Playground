@@ -1,9 +1,7 @@
 package com.github.basdxz.tesrplay.shipping;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
+import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
 import com.github.basdxz.tesrplay.newRender.providers.CuboidRenderProvider;
-import lombok.*;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 /*
@@ -14,7 +12,7 @@ import net.minecraft.block.material.Material;
  */
 public class IndustrialCasing extends BaseBlock implements CuboidRenderProvider {
     public IndustrialCasing(Material material) {
-        super(material);
+        super(material,0);
     }
 
     @Override

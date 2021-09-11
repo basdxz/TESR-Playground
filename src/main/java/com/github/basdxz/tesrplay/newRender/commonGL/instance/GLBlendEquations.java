@@ -1,6 +1,6 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.boxesWithStuff;
+package com.github.basdxz.tesrplay.newRender.commonGL.instance;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp.defs.GLBlendEquation;
+import com.github.basdxz.tesrplay.newRender.commonGL.defenition.GLBlendEquation;
 
 import static org.lwjgl.opengl.GL14.*;
 

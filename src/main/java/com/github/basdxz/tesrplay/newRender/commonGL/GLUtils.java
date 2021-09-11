@@ -1,6 +1,6 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.GLHelp;
+package com.github.basdxz.tesrplay.newRender.commonGL;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.PosXYZ;
+import com.github.basdxz.tesrplay.newRender.cuboid.PosXYZ;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import net.minecraft.client.renderer.Tessellator;
@@ -11,7 +11,7 @@ import static com.github.basdxz.tesrplay.Reference.*;
 //TODO Rename something more sensible and move this class
 //TODO Clean up the GL helper packages as a whole
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StraightGLUtil {
+public final class GLUtils {
     public final static PosXYZ BLOCK_CENTER_OFFSET = new PosXYZ(0.5D,0.5D,0.5D);
 
     //public void drawAndSettingWrapper(Runnable runnable, boolean noDraw, boolean isAlphaPass) {

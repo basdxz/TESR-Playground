@@ -1,9 +1,8 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
+package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import lombok.experimental.Accessors;
 
 @Accessors(fluent = true)
@@ -11,6 +10,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ColorRGBA {
+    public static final ColorRGBA NO_COLOR = new ColorRGBA(1,1,1,1);
+
     private float r;
     private float g;
     private float b;

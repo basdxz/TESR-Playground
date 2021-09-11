@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
+package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import lombok.experimental.SuperBuilder;
 import net.minecraft.util.IIcon;

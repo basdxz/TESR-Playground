@@ -1,8 +1,8 @@
 package com.github.basdxz.tesrplay.newRender.providers;
 
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidRenderer;
-import com.github.basdxz.tesrplay.advancedCubeMakingThing.components.LayeredIcon;
+import com.github.basdxz.tesrplay.newRender.cuboid.CuboidBounds;
+import com.github.basdxz.tesrplay.newRender.cuboid.CuboidRenderer;
+import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
 import lombok.val;
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;

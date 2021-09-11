@@ -1,4 +1,4 @@
-package com.github.basdxz.tesrplay.advancedCubeMakingThing.components;
+package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.Reference.*;
-import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
+import static com.github.basdxz.tesrplay.newRender.cuboid.CuboidBounds.CuboidBoundGetters.*;
 
 @NoArgsConstructor
 public class Vertex {
@@ -186,7 +186,9 @@ public class Vertex {
             setColorRGBA();
             setVertPosUV();
             setNormalDirection();
+            Tessellator.instance.startDrawingQuads();
             tessellate();
+            Tessellator.instance.draw();
         }
 
         private void setLayer(BlendableIcon layer) {
