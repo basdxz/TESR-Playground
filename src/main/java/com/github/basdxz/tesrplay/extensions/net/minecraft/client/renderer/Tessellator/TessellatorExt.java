@@ -1,4 +1,4 @@
-package TESRPlayground.extensions.net.minecraft.client.renderer.Tessellator;
+package com.github.basdxz.tesrplay.extensions.net.minecraft.client.renderer.Tessellator;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import lombok.AccessLevel;

@@ -172,7 +172,7 @@ tasks {
     }
     artifacts {
         archives(sourcesJar)
-        archives(javadocJar)
+        //archives(javadocJar)
         archives(devJar)
     }
 }

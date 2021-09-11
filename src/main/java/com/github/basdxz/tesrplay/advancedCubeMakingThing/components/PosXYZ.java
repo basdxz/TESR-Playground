@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import static com.github.basdxz.tesrplay.TESRPlayground.*;
+import static com.github.basdxz.tesrplay.Reference.*;
 
 @Accessors(fluent = true)
 @Getter

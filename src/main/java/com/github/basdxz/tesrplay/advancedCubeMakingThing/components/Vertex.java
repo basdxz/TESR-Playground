@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import static com.github.basdxz.tesrplay.TESRPlayground.*;
+import static com.github.basdxz.tesrplay.Reference.*;
 import static com.github.basdxz.tesrplay.advancedCubeMakingThing.components.CuboidBounds.CuboidBoundGetters.*;
 
 @NoArgsConstructor

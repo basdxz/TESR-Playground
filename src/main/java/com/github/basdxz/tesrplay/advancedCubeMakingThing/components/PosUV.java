@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.util.IIcon;
 import org.ejml.simple.SimpleMatrix;
 
-import static com.github.basdxz.tesrplay.TESRPlayground.*;
+import static com.github.basdxz.tesrplay.Reference.*;
 
 @Accessors(fluent = true)
 @Getter
