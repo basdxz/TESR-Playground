@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.awt.*;
+
 @Accessors(fluent = true)
 @Getter
 @AllArgsConstructor
@@ -16,6 +18,13 @@ public class ColorRGBA {
     private float g;
     private float b;
     private float a;
+
+    public ColorRGBA(Color color) {
+        r = color.getRed() / 255F;
+        g = color.getGreen() / 255F;
+        b = color.getBlue() / 255F;
+        a = color.getAlpha() / 255F;
+    }
 
     public ColorRGBA set(ColorRGBA that) {
         r = that.r();

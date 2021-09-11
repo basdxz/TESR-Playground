@@ -17,8 +17,8 @@ public enum GLBlendFuncs implements GLBlendFunc {
     INVERTED_ADD(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR),
     LENS_FILTER(GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR);
 
-    public final int sourceFactor;
-    public final int destinationFactor;
+    private final int sourceFactor;
+    private final int destinationFactor;
 
     GLBlendFuncs(int sourceFactor, int destinationFactor) {
         this.sourceFactor = sourceFactor;

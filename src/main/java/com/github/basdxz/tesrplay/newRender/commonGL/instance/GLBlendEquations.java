@@ -11,7 +11,7 @@ public enum GLBlendEquations implements GLBlendEquation {
     MIN(GL_MIN),
     MAX(GL_MAX);
 
-    public final int mode;
+    private final int mode;
 
     GLBlendEquations(int mode) {
         this.mode = mode;

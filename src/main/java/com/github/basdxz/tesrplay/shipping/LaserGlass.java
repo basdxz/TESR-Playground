@@ -1,5 +1,8 @@
 package com.github.basdxz.tesrplay.shipping;
 
+import com.github.basdxz.tesrplay.Colors;
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendEquations;
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendFuncs;
 import com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA;
 import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
 import com.github.basdxz.tesrplay.newRender.cuboid.MaterialTexture;
@@ -10,10 +13,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import java.util.Random;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
 import static com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA.NO_COLOR;
@@ -28,7 +35,7 @@ public class LaserGlass extends BaseBlock implements CuboidRenderProvider {
 
     public LaserGlass(int renderType) {
         super(Material.glass, renderType);
-        setBlockName("LaserGlass");
+        setBlockName(MODID + ".laser_glass");
         setBlockTextureName(MODID + ":laser_glass");
     }
 
@@ -69,16 +76,29 @@ public class LaserGlass extends BaseBlock implements CuboidRenderProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public LayeredIcon getTextureLayers(int metadata) {
-        Random rand = new Random();
-
         return new SameSideAllAround(
                 MaterialTexture.builder()
                         .icon(getIcon(0, 0))
-                        .colorRGBA(new ColorRGBA(1.0F, 0.0F, 0.0F, 1.0F))
-                        .build(),
-                MaterialTexture.builder()
-                        .icon(GLASS_FRAME)
-                        .colorRGBA(NO_COLOR)
+                        .colorRGBA(Colors.values()[metadata].getColor())
+                        .blendingFunction(() -> {
+                            GLBlendEquations.REVERSE_SUBTRACT.apply();
+                            GLBlendFuncs.ALPHA.apply();
+                        })
                         .build());
+                //MaterialTexture.builder()
+                //        .icon(GLASS_FRAME)
+                //        .colorRGBA(NO_COLOR)
+                //        .build()
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(Item items, CreativeTabs creativeTabs, List list) {
+        IntStream.range(0, Colors.values().length).mapToObj(
+                i -> new ItemStack(items, 1, i)).forEach(list::add);
+    }
+
+    public int damageDropped(int p_149692_1_)
+    {
+        return p_149692_1_;
     }
 }
