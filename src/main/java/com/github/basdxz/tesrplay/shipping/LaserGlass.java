@@ -1,6 +1,5 @@
 package com.github.basdxz.tesrplay.shipping;
 
-import com.github.basdxz.tesrplay.Colors;
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendEquations;
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendFuncs;
 import com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
-import static com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA.NO_COLOR;
 
 /*
     Creates 16 variants using the minecraft pallet.
@@ -79,26 +77,25 @@ public class LaserGlass extends BaseBlock implements CuboidRenderProvider {
         return new SameSideAllAround(
                 MaterialTexture.builder()
                         .icon(getIcon(0, 0))
-                        .colorRGBA(Colors.values()[metadata].getColor())
+                        .colorRGBA(ColorRGBA.Colors.values()[metadata].getColor())
                         .blendingFunction(() -> {
                             GLBlendEquations.REVERSE_SUBTRACT.apply();
                             GLBlendFuncs.ALPHA.apply();
                         })
                         .build());
-                //MaterialTexture.builder()
-                //        .icon(GLASS_FRAME)
-                //        .colorRGBA(NO_COLOR)
-                //        .build()
+        //MaterialTexture.builder()
+        //        .icon(GLASS_FRAME)
+        //        .colorRGBA(NO_COLOR)
+        //        .build()
     }
 
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item items, CreativeTabs creativeTabs, List list) {
-        IntStream.range(0, Colors.values().length).mapToObj(
+        IntStream.range(0, ColorRGBA.Colors.values().length).mapToObj(
                 i -> new ItemStack(items, 1, i)).forEach(list::add);
     }
 
-    public int damageDropped(int p_149692_1_)
-    {
+    public int damageDropped(int p_149692_1_) {
         return p_149692_1_;
     }
 }

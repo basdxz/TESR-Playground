@@ -1,8 +1,12 @@
 package com.github.basdxz.tesrplay.newRender.commonGL;
 
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendEquations;
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendFuncs;
+import com.github.basdxz.tesrplay.newRender.cuboid.BlendableIcon;
 import com.github.basdxz.tesrplay.newRender.cuboid.PosXYZ;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
@@ -12,14 +16,9 @@ import static com.github.basdxz.tesrplay.Reference.*;
 //TODO Clean up the GL helper packages as a whole
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GLUtils {
-    public final static PosXYZ BLOCK_CENTER_OFFSET = new PosXYZ(0.5D,0.5D,0.5D);
+    public final static PosXYZ BLOCK_CENTER_OFFSET = new PosXYZ(0.5D, 0.5D, 0.5D);
 
-    //public void drawAndSettingWrapper(Runnable runnable, boolean noDraw, boolean isAlphaPass) {
-    //    drawAndUnDraw(noDraw);
-    //    runnable.run();
-    //    drawAndUnDraw(noDraw);
-    //    restoreDefaults(noDraw, isAlphaPass);
-    //}
+
 //
     //public void drawAndUnDraw(boolean noDraw) {
     //    if (noDraw) return;
@@ -47,6 +46,24 @@ public final class GLUtils {
 //
     //    glFrontFace(GL_CCW);
     //}
+
+    public static void blendAndTessellate(BlendableIcon layer, Runnable tesselation, boolean renderingAsItem) {
+        val noDraw = layer.noDraw() && !renderingAsItem;
+        if (noDraw) {
+            tesselation.run();
+            return;
+        }
+
+        //Tessellator.instance.pauseDraw();
+        //Tessellator.instance.startDrawingQuads();
+        //layer.applyBlending();
+        tesselation.run();
+        //Tessellator.instance.draw();
+        //Tessellator.instance.resumeDraw();
+
+        //GLBlendFuncs.applyDefault();
+        //GLBlendEquations.applyDefault();
+    }
 
     //TODO get blending and alpha mode clean up
     //TODO make safe render mode-depentent, knowing when it doesn't need pause/resume or push/pop etc
