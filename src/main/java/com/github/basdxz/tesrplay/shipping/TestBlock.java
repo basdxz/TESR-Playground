@@ -1,9 +1,6 @@
 package com.github.basdxz.tesrplay.shipping;
 
-import com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA;
-import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
-import com.github.basdxz.tesrplay.newRender.cuboid.MaterialTexture;
-import com.github.basdxz.tesrplay.newRender.cuboid.SameSideAllAround;
+import com.github.basdxz.tesrplay.newRender.cuboid.*;
 import com.github.basdxz.tesrplay.newRender.providers.CuboidRenderProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -67,8 +64,7 @@ public class TestBlock extends Block implements CuboidRenderProvider {
 
     @Override
     public boolean isOpaqueCube() {
-        return true;
-        //return false;
+        return false;
     }
 
     @Override
@@ -78,7 +74,7 @@ public class TestBlock extends Block implements CuboidRenderProvider {
 
     @Override
     public boolean renderAsNormalBlock() {
-        return true;
+        return false;
     }
 
     @Override
@@ -86,15 +82,20 @@ public class TestBlock extends Block implements CuboidRenderProvider {
         Random rand = new Random();
 
         return new SameSideAllAround(MaterialTexture.builder()
-                .icon(Blocks.iron_ore.getIcon(0, 0))
+                .icon(Blocks.coal_block.getIcon(0, 0))
                 //.icon(TEST_3)
                 //.glBlendEquation(GLBlendEquations.REVERSE_SUBTRACT)
                 //.glBlendFunc(GLBlendFuncs.ALPHA)
                 //.hasAlpha(true)
                 //.noDraw(true)
                 //.rotation(rand.nextDouble() * Math.PI)
-                .colorRGBA(new ColorRGBA(1.0F, 1.0F, 1.0F, 1.0F))
+                .colorRGBA(new ColorRGBA(0.0F, 0.0F, 0.0F, 1.0F))
                 .build());
+    }
+
+    @Override
+    public CuboidBounds getBounds() {
+        return new CuboidBounds(new PosXYZ(0.25D, 0.25D, 0.25D), new PosXYZ(0.75D, 0.75D, 0.75D));
     }
 
     //@Override
