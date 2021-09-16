@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.Reference.*;
+import static com.github.basdxz.tesrplay.newRender.commonGL.GLUtils.blendAndTessellate;
 import static com.github.basdxz.tesrplay.newRender.cuboid.CuboidBounds.CuboidBoundGetters.*;
 
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class Vertex {
     private void tessellate() {
         if (hasBrightness) Tessellator.instance.setBrightness(brightness);
         Tessellator.instance.setColorRGBA_F(colorRGBA.r(), colorRGBA.g(), colorRGBA.b(), colorRGBA.a());
-        Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
+        //Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
         Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 
@@ -98,7 +99,6 @@ public class Vertex {
 
         public void preRender(ForgeDirection faceDirection) {
             setFace(faceDirection);
-            setVertPosXYZ();
             setMixedBrightness();
             setVertBrightness();
             setAmbientOcclusionLight();
@@ -107,11 +107,6 @@ public class Vertex {
 
         private void setFace(ForgeDirection faceDirection) {
             this.faceDirection = faceDirection;
-        }
-
-        private void setVertPosXYZ() {
-            IntStream.range(0, vertices.length).forEach(i ->
-                    vertices[i].posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ));
         }
 
         private void setMixedBrightness() {
@@ -183,16 +178,20 @@ public class Vertex {
 
         public void render(BlendableIcon layer) {
             setLayer(layer);
+            setVertPosXYZ();
             setColorRGBA();
             setVertPosUV();
             setNormalDirection();
-            Tessellator.instance.startDrawingQuads();
             tessellate();
-            Tessellator.instance.draw();
         }
 
         private void setLayer(BlendableIcon layer) {
             this.layer = layer;
+        }
+
+        private void setVertPosXYZ() {
+            IntStream.range(0, vertices.length).forEach(i ->
+                    vertices[i].posXYZ.set(bounds.getPos(vertPosMatrix[faceDirection.ordinal()][i])).add(posXYZ));
         }
 
         private void setColorRGBA() {
@@ -215,7 +214,10 @@ public class Vertex {
         }
 
         private void tessellate() {
-            IntStream.range(0, vertices.length).forEach(i -> vertices[i].tessellate());
+            blendAndTessellate(
+                    layer,
+                    () -> IntStream.range(0, vertices.length).forEach(i -> vertices[i].tessellate()),
+                    renderingAsItem);
         }
     }
 }

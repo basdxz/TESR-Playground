@@ -31,8 +31,8 @@ public class CuboidRenderer {
     public void renderInventoryBlock(Block block, CuboidBounds bounds, LayeredIcon layeredIcon) {
 
         initInventoryBlock(block, bounds, layeredIcon);
-        glColor();
         GL11.glPushMatrix();
+        glColor();
         glTranslate(-0.5D);
         glYRotate(90D);
         render();
@@ -61,14 +61,12 @@ public class CuboidRenderer {
     }
 
     private void render() {
-        Tessellator.instance.pauseDraw();
         for (ForgeDirection direction : VALID_DIRECTIONS) {
             if (shouldSideBeSkipped(direction)) continue;
             quadVertices.preRender(direction);
             for (BlendableIcon layer : CuboidRenderer.layeredIcon.getBlendableIconLayers(direction))
                 quadVertices.render(layer);
         }
-        Tessellator.instance.resumeDraw();
     }
 
     private boolean shouldSideBeSkipped(ForgeDirection direction) {

@@ -2,6 +2,7 @@ package com.github.basdxz.tesrplay.shipping;
 
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendEquations;
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendFuncs;
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLToggles;
 import com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA;
 import com.github.basdxz.tesrplay.newRender.cuboid.LayeredIcon;
 import com.github.basdxz.tesrplay.newRender.cuboid.MaterialTexture;
@@ -18,10 +19,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
+import static com.github.basdxz.tesrplay.newRender.cuboid.ColorRGBA.NO_COLOR;
 
 /*
     Creates 16 variants using the minecraft pallet.
@@ -64,7 +67,6 @@ public class LaserGlass extends BaseBlock implements CuboidRenderProvider {
         return false;
     }
 
-
     @Override
     @SideOnly(Side.CLIENT)
     public boolean renderAsNormalBlock() {
@@ -77,16 +79,19 @@ public class LaserGlass extends BaseBlock implements CuboidRenderProvider {
         return new SameSideAllAround(
                 MaterialTexture.builder()
                         .icon(getIcon(0, 0))
-                        .colorRGBA(ColorRGBA.Colors.values()[metadata].getColor())
+                        .colorRGBA(ColorRGBA.Colors.values()[metadata].getColor(1))
                         .blendingFunction(() -> {
-                            GLBlendEquations.REVERSE_SUBTRACT.apply();
-                            GLBlendFuncs.ALPHA.apply();
+                            GLToggles.ALPHA_TEST.disable();
+                            GLBlendEquations.MIN.apply();
+                            GLBlendFuncs.ADDITIVE.apply();
                         })
+                        .flatTint(true)
+                        .renderPass(1)
+                        .build(),
+                MaterialTexture.builder()
+                        .icon(GLASS_FRAME)
+                        .colorRGBA(NO_COLOR)
                         .build());
-        //MaterialTexture.builder()
-        //        .icon(GLASS_FRAME)
-        //        .colorRGBA(NO_COLOR)
-        //        .build()
     }
 
     @SideOnly(Side.CLIENT)

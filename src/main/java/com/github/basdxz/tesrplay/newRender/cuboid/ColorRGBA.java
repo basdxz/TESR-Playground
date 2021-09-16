@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.val;
 
 import java.awt.*;
 
@@ -12,7 +13,7 @@ import java.awt.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ColorRGBA {
-    public static final ColorRGBA NO_COLOR = new ColorRGBA(1,1,1,1);
+    public static final ColorRGBA NO_COLOR = new ColorRGBA(1, 1, 1, 1);
 
     private float r;
     private float g;
@@ -20,10 +21,14 @@ public class ColorRGBA {
     private float a;
 
     public ColorRGBA(Color color) {
-        r = color.getRed() / 255F;
-        g = color.getGreen() / 255F;
-        b = color.getBlue() / 255F;
-        a = color.getAlpha() / 255F;
+        r = clampColor(color.getRed() / 255F);
+        g = clampColor(color.getGreen() / 255F);
+        b = clampColor(color.getBlue() / 255F);
+        a = clampColor(color.getAlpha() / 255F);
+    }
+
+    private static float clampColor(float value) {
+        return Math.max(0.0F, Math.min(1.0F, value));
     }
 
     public ColorRGBA set(ColorRGBA that) {
@@ -66,6 +71,12 @@ public class ColorRGBA {
 
         public ColorRGBA getColor() {
             return new ColorRGBA(color);
+        }
+
+        public ColorRGBA getColor(float saturation) {
+            val colorHSV = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+            colorHSV[1] = clampColor(saturation);
+            return new ColorRGBA(Color.getHSBColor(colorHSV[0], colorHSV[1], colorHSV[2]));
         }
     }
 }

@@ -2,7 +2,6 @@ package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import net.minecraft.util.IIcon;
 
-//TODO: Blending should be provided as a Runnable
 public interface BlendableIcon extends IIcon {
     boolean doStretch();
 
@@ -14,9 +13,25 @@ public interface BlendableIcon extends IIcon {
 
     boolean flatTint();
 
-    boolean hasAlpha();
+    int renderPass();//TODO Determine this yourself with a proper check
 
     boolean noDraw();
 
     void applyBlending();
+
+    default double scaleU() {
+        return 1.0D;
+    }
+
+    default double scaleV() {
+        return 1.0D;
+    }
+
+    default double offsetU() {
+        return 0.0D;
+    }
+
+    default double offsetV() {
+        return 0.0D;
+    }
 }

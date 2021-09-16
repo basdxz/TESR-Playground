@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class MaterialTexture extends IIconContainer implements BlendableIcon {
     private final Runnable blendingFunction;
-    private final boolean hasAlpha;
+    private final int renderPass;
     private final boolean doStretch;
     private final boolean skipScale;
     private final double rotation;

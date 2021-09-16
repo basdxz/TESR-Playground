@@ -29,6 +29,7 @@ public final class TessellatorExt {
     if (suspendedDrawing) {
       rebindBlockTextures();
       thiz.startDrawing(suspendedDrawMode);
+      suspendedDrawing = false;
     }
   }
 

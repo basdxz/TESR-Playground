@@ -2,6 +2,7 @@ package com.github.basdxz.tesrplay.newRender.commonGL;
 
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendEquations;
 import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLBlendFuncs;
+import com.github.basdxz.tesrplay.newRender.commonGL.instance.GLToggles;
 import com.github.basdxz.tesrplay.newRender.cuboid.BlendableIcon;
 import com.github.basdxz.tesrplay.newRender.cuboid.PosXYZ;
 import lombok.AccessLevel;
@@ -18,35 +19,6 @@ import static com.github.basdxz.tesrplay.Reference.*;
 public final class GLUtils {
     public final static PosXYZ BLOCK_CENTER_OFFSET = new PosXYZ(0.5D, 0.5D, 0.5D);
 
-
-//
-    //public void drawAndUnDraw(boolean noDraw) {
-    //    if (noDraw) return;
-    //    Tessellator.instance.draw();
-    //    Tessellator.instance.startDrawingQuads();
-//
-    //    Tessellator.instance.setBrightness(0);
-    //    Tessellator.instance.setColorRGBA_F(1,1,1,1);
-    //}
-//
-    //public void restoreDefaults(boolean noDraw, boolean isAlphaPass) {
-    //    if (noDraw) return;
-    //    if (isAlphaPass) {
-    //        GLToggles.ALPHA_TEST.disable();
-    //        GLToggles.BLEND.enable();
-    //    } else {
-    //        GLToggles.ALPHA_TEST.enable();
-    //        GLToggles.BLEND.disable();
-    //    }
-    //    GLToggles.LIGHTING.enable();
-    //    GLToggles.CULL_FACE.enable();
-//
-    //    GLBlendFuncs.applyDefault();
-    //    GLBlendEquations.applyDefault();
-//
-    //    glFrontFace(GL_CCW);
-    //}
-
     public static void blendAndTessellate(BlendableIcon layer, Runnable tesselation, boolean renderingAsItem) {
         val noDraw = layer.noDraw() && !renderingAsItem;
         if (noDraw) {
@@ -54,15 +26,33 @@ public final class GLUtils {
             return;
         }
 
-        //Tessellator.instance.pauseDraw();
-        //Tessellator.instance.startDrawingQuads();
-        //layer.applyBlending();
+        Tessellator.instance.pauseDraw();
+        Tessellator.instance.startDrawingQuads();
+        layer.applyBlending();
         tesselation.run();
-        //Tessellator.instance.draw();
-        //Tessellator.instance.resumeDraw();
+        Tessellator.instance.draw();
+        Tessellator.instance.resumeDraw();
 
-        //GLBlendFuncs.applyDefault();
-        //GLBlendEquations.applyDefault();
+        resetGL(layer.renderPass() == 1);
+    }
+
+    private static void resetGL(boolean isAlphaPass) {
+        // Blending
+        GLBlendFuncs.applyDefault();
+        GLBlendEquations.applyDefault();
+
+        // Transparency
+        GLToggles.ALPHA_TEST.enable();
+        if (isAlphaPass) {
+            GLToggles.BLEND.enable();
+        } else {
+            GLToggles.BLEND.disable();
+        }
+
+        // Extras
+       //GLToggles.LIGHTING.enable();
+       //GLToggles.CULL_FACE.enable();
+       //GL11.glFrontFace(GL11.GL_CCW);
     }
 
     //TODO get blending and alpha mode clean up
