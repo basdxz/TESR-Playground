@@ -2,7 +2,6 @@ package com.github.basdxz.tesrplay.newRender.cuboid;
 
 import lombok.experimental.UtilityClass;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
@@ -29,7 +28,6 @@ public class CuboidRenderer {
     }
 
     public void renderInventoryBlock(Block block, CuboidBounds bounds, LayeredIcon layeredIcon) {
-
         initInventoryBlock(block, bounds, layeredIcon);
         GL11.glPushMatrix();
         glColor();
@@ -37,7 +35,6 @@ public class CuboidRenderer {
         glYRotate(90D);
         render();
         GL11.glPopMatrix();
-
     }
 
     private void initWorldBlock(IBlockAccess world, int posX, int posY, int posZ,

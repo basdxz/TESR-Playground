@@ -11,11 +11,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
-import java.util.Random;
-
 import static com.github.basdxz.tesrplay.TESRPlayground.MODID;
 
-//public class TestBlock extends Block implements ModelRenderProvider {
 public class TestBlock extends Block implements CuboidRenderProvider {
     public static IIcon RED_TINT;
     public static IIcon GREEN_TINT;
@@ -49,22 +46,15 @@ public class TestBlock extends Block implements CuboidRenderProvider {
         this.blockIcon = BOTTOM_GLASS;
     }
 
-    @Override
-    public int getRenderBlockPass() {
-        return 0; //alpha
-    }
-
     //This is for glass stuff
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess blockAccess, int posX, int posY, int posZ, int side) {
-        Block block = blockAccess.getBlock(posX, posY, posZ);
-        if (block == this) return false;
-        return super.shouldSideBeRendered(blockAccess, posX, posY, posZ, side);
+        return true;
     }
 
     @Override
     public boolean isOpaqueCube() {
-        return false;
+        return true;
     }
 
     @Override
@@ -74,32 +64,19 @@ public class TestBlock extends Block implements CuboidRenderProvider {
 
     @Override
     public boolean renderAsNormalBlock() {
-        return false;
+        return true;
     }
 
     @Override
     public LayeredIcon getTextureLayers(int metadata) {
-        Random rand = new Random();
-
         return new SameSideAllAround(MaterialTexture.builder()
-                .icon(Blocks.coal_block.getIcon(0, 0))
-                //.icon(TEST_3)
-                //.glBlendEquation(GLBlendEquations.REVERSE_SUBTRACT)
-                //.glBlendFunc(GLBlendFuncs.ALPHA)
-                //.hasAlpha(true)
-                //.noDraw(true)
-                //.rotation(rand.nextDouble() * Math.PI)
-                .colorRGBA(new ColorRGBA(0.0F, 0.0F, 0.0F, 1.0F))
+                .icon(Blocks.cobblestone.getIcon(0, 0))
+                .colorRGBA(new ColorRGBA(1.0F, 1.0F, 1.0F, 1.0F))
                 .build());
     }
 
     @Override
     public CuboidBounds getBounds() {
-        return new CuboidBounds(new PosXYZ(0.25D, 0.25D, 0.25D), new PosXYZ(0.75D, 0.75D, 0.75D));
+        return new CuboidBounds(new PosXYZ(-0.5, -0.5, -0.5), new PosXYZ(1.5, 1.5, 1.5));
     }
-
-    //@Override
-    //public Model getModel() {
-    //    return Models.PRISM;
-    //}
 }

@@ -27,12 +27,13 @@ public class Vertex {
     private void tessellate() {
         if (hasBrightness) Tessellator.instance.setBrightness(brightness);
         Tessellator.instance.setColorRGBA_F(colorRGBA.r(), colorRGBA.g(), colorRGBA.b(), colorRGBA.a());
-        //Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
+        Tessellator.instance.setNormal((float) posNormal.x(), (float) posNormal.y(), (float) posNormal.z());
         Tessellator.instance.addVertexWithUV(posXYZ.x(), posXYZ.y(), posXYZ.z(), posUV.u(), posUV.v());
     }
 
     @NoArgsConstructor
     public static class Vertex4D {
+        // @formatter:off
         private static final CuboidBounds.CuboidBoundGetters[][][] vertPosMatrix = new CuboidBounds.CuboidBoundGetters[][][]{
                 {{MAX_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MAX_Z}, {MIN_X, MIN_Y, MIN_Z}, {MAX_X, MIN_Y, MIN_Z}},
                 {{MIN_X, MAX_Y, MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {MAX_X, MAX_Y, MIN_Z}, {MIN_X, MAX_Y, MIN_Z}},
@@ -43,22 +44,24 @@ public class Vertex {
         };
 
         private static final CuboidBounds.CuboidBoundGetters[][][] vertUVMatrix = new CuboidBounds.CuboidBoundGetters[][][]{
-                {{MAX_X_COMP, MAX_Z}, {MIN_X_COMP, MAX_Z}, {MIN_X_COMP, MIN_Z}, {MAX_X_COMP, MIN_Z}},
-                {{MIN_X, MAX_Z}, {MAX_X, MAX_Z}, {MAX_X, MIN_Z}, {MIN_X, MIN_Z}},
+                {{MAX_X_COMP, MAX_Z},      {MIN_X_COMP, MAX_Z},      {MIN_X_COMP, MIN_Z},      {MAX_X_COMP, MIN_Z}},
+                {{MIN_X,      MAX_Z},      {MAX_X,      MAX_Z},      {MAX_X,      MIN_Z},      {MIN_X,      MIN_Z}},
                 {{MAX_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MIN_Y_COMP}, {MIN_X_COMP, MAX_Y_COMP}, {MAX_X_COMP, MAX_Y_COMP}},
-                {{MIN_X, MIN_Y_COMP}, {MAX_X, MIN_Y_COMP}, {MAX_X, MAX_Y_COMP}, {MIN_X, MAX_Y_COMP}},
-                {{MIN_Z, MIN_Y_COMP}, {MAX_Z, MIN_Y_COMP}, {MAX_Z, MAX_Y_COMP}, {MIN_Z, MAX_Y_COMP}},
+                {{MIN_X,      MIN_Y_COMP}, {MAX_X,      MIN_Y_COMP}, {MAX_X,      MAX_Y_COMP}, {MIN_X,      MAX_Y_COMP}},
+                {{MIN_Z,      MIN_Y_COMP}, {MAX_Z,      MIN_Y_COMP}, {MAX_Z,      MAX_Y_COMP}, {MIN_Z,      MAX_Y_COMP}},
                 {{MAX_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MIN_Y_COMP}, {MIN_Z_COMP, MAX_Y_COMP}, {MAX_Z_COMP, MAX_Y_COMP}}
+
         };
 
-        private static final int[][][] vertBrightnessAndAOScratchMatrix = new int[][][]{
-                {{0, -1, 0}, {1, -1, -1}, {0, -1, -1}, {-1, -1, -1}, {-1, -1, 0}, {-1, -1, 1}, {0, -1, 1}, {1, -1, 1}, {1, -1, 0}},
-                {{0, 1, 0}, {-1, 1, 1}, {0, 1, 1}, {1, 1, 1}, {1, 1, 0}, {1, 1, -1}, {0, 1, -1}, {-1, 1, -1}, {-1, 1, 0}},
-                {{0, 0, -1}, {1, -1, -1}, {0, -1, -1}, {-1, -1, -1}, {-1, 0, -1}, {-1, 1, -1}, {0, 1, -1}, {1, 1, -1}, {1, 0, -1}},
-                {{0, 0, 1}, {-1, -1, 1}, {0, -1, 1}, {1, -1, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}, {-1, 1, 1}, {-1, 0, 1}},
-                {{-1, 0, 0}, {-1, -1, -1}, {-1, -1, 0}, {-1, -1, 1}, {-1, 0, 1}, {-1, 1, 1}, {-1, 1, 0}, {-1, 1, -1}, {-1, 0, -1}},
-                {{1, 0, 0}, {1, -1, 1}, {1, -1, 0}, {1, -1, -1}, {1, 0, -1}, {1, 1, -1}, {1, 1, 0}, {1, 1, 1}, {1, 0, 1}}
+        private static final CuboidBounds.CuboidBoundGetters[][][] vertBrightnessAndAOScratchMatrix = new CuboidBounds.CuboidBoundGetters[][][]{
+                {{ZERO,  MIN_Y, ZERO},  {MAX_X, MIN_Y, MIN_Z}, {ZERO,  MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, ZERO},  {MIN_X, MIN_Y, MAX_Z}, {ZERO,  MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, ZERO}},
+                {{ZERO,  MAX_Y, ZERO},  {MIN_X, MAX_Y, MAX_Z}, {ZERO,  MAX_Y, MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {MAX_X, MAX_Y, ZERO},  {MAX_X, MAX_Y, MIN_Z}, {ZERO,  MAX_Y, MIN_Z}, {MIN_X, MAX_Y, MIN_Z}, {MIN_X, MAX_Y, ZERO}},
+                {{ZERO,  ZERO,  MIN_Z}, {MAX_X, MIN_Y, MIN_Z}, {ZERO,  MIN_Y, MIN_Z}, {MIN_X, MIN_Y, MIN_Z}, {MIN_X, ZERO,  MIN_Z}, {MIN_X, MAX_Y, MIN_Z}, {ZERO,  MAX_Y, MIN_Z}, {MAX_X, MAX_Y, MIN_Z}, {MAX_X, ZERO,  MIN_Z}},
+                {{ZERO,  ZERO,  MAX_Z}, {MIN_X, MIN_Y, MAX_Z}, {ZERO,  MIN_Y, MAX_Z}, {MAX_X, MIN_Y, MAX_Z}, {MAX_X, ZERO,  MAX_Z}, {MAX_X, MAX_Y, MAX_Z}, {ZERO,  MAX_Y, MAX_Z}, {MIN_X, MAX_Y, MAX_Z}, {MIN_X, ZERO,  MAX_Z}},
+                {{MIN_X, ZERO,  ZERO},  {MIN_X, MIN_Y, MIN_Z}, {MIN_X, MIN_Y, ZERO},  {MIN_X, MIN_Y, MAX_Z}, {MIN_X, ZERO,  MAX_Z}, {MIN_X, MAX_Y, MAX_Z}, {MIN_X, MAX_Y, ZERO},  {MIN_X, MAX_Y, MIN_Z}, {MIN_X, ZERO,  MIN_Z}},
+                {{MAX_X, ZERO,  ZERO},  {MAX_X, MIN_Y, MAX_Z}, {MAX_X, MIN_Y, ZERO},  {MAX_X, MIN_Y, MIN_Z}, {MAX_X, ZERO,  MIN_Z}, {MAX_X, MAX_Y, MIN_Z}, {MAX_X, MAX_Y, ZERO},  {MAX_X, MAX_Y, MAX_Z}, {MAX_X, ZERO,  MAX_Z}}
         };
+        // @formatter:on
 
         private static final int[][] vertBrightnessAndAOMatrix = new int[][]{
                 {A, AB, AD, ABCD}, {B, AB, BC, ABCD}, {C, BC, CD, ABCD}, {D, CD, AD, ABCD}
@@ -99,8 +102,9 @@ public class Vertex {
 
         public void preRender(ForgeDirection faceDirection) {
             setFace(faceDirection);
+            setVertPosXYZ();//todo make set pos into scratch
             setMixedBrightness();
-            setVertBrightness();
+            setVertBrightness();//todo make set brightness into scratch
             setAmbientOcclusionLight();
             setVertAmbientOcclusionFactors();
         }
@@ -125,9 +129,10 @@ public class Vertex {
             });
         }
 
-        private int getMixedBrightnessForBlock(int... posOffset) {
-            if (posOffset.length != 3)
+        private int getMixedBrightnessForBlock(CuboidBounds.CuboidBoundGetters... posOffsetGetters) {
+            if (posOffsetGetters.length != 3)
                 throw new IllegalArgumentException("Method expects array length 3.");
+            val posOffset = bounds.getPosAOOffset(posOffsetGetters);
             return block.getMixedBrightnessForBlock(blockAccess,
                     (int) (posXYZ.x() + posOffset[X]),
                     (int) (posXYZ.y() + posOffset[Y]),
@@ -147,10 +152,13 @@ public class Vertex {
         private void setAmbientOcclusionLight() {
             if (skipAmbientOcclusion()) return;
             IntStream.range(0, ambientOcclusionLightScratch.length).forEach(i -> ambientOcclusionLightScratch[i]
-                    = AmbientOcclusionLight(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]));
+                    = ambientOcclusionLight(vertBrightnessAndAOScratchMatrix[faceDirection.ordinal()][i]));
         }
 
-        private float AmbientOcclusionLight(int... posOffset) {
+        private float ambientOcclusionLight(CuboidBounds.CuboidBoundGetters... posOffsetGetters) {
+            if (posOffsetGetters.length != 3)
+                throw new IllegalArgumentException("Method expects array length 3.");
+            val posOffset = bounds.getPosAOOffset(posOffsetGetters);
             return getBlockWithOffset(posOffset).getAmbientOcclusionLightValue();
         }
 
@@ -178,7 +186,8 @@ public class Vertex {
 
         public void render(BlendableIcon layer) {
             setLayer(layer);
-            setVertPosXYZ();
+            //todo load vert pos (scaled based on stored vert offsets etc)
+            //todo load brightness from scratch
             setColorRGBA();
             setVertPosUV();
             setNormalDirection();

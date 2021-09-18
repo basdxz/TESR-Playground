@@ -25,9 +25,25 @@ public class PosXYZ {
         return this;
     }
 
+    public PosXYZ add(double addend) {
+        x += addend;
+        y += addend;
+        z += addend;
+        return this;
+    }
+
     public void add(PosXYZ that) {
         x += that.x;
         y += that.y;
         z += that.z;
+    }
+
+    @Override
+    public String toString() {
+        return "PosXYZ{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
     }
 }

@@ -115,9 +115,9 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.18.20")
     annotationProcessor("org.projectlombok:lombok:1.18.20")
     //Manifold Extensions
-    implementation("systems.manifold:manifold-javadoc-agent:2021.1.14")
-    implementation("systems.manifold:manifold-ext-rt:2021.1.14")
-    annotationProcessor("systems.manifold:manifold-ext:2021.1.14")
+    implementation("systems.manifold:manifold-javadoc-agent:2021.1.18")
+    implementation("systems.manifold:manifold-ext-rt:2021.1.18")
+    annotationProcessor("systems.manifold:manifold-ext:2021.1.18")
 
     implementation("org.ejml:ejml-all:0.31")
 

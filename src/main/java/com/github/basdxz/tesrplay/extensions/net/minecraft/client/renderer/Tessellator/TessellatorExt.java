@@ -9,11 +9,12 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 
 
-//Not working with Quad rendering (?)
 @Extension
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TessellatorExt {
-  // Theses being static is okay because the Tessellator is a singleton anyway
+  /**
+   * These being static is okay because the Tessellator is a singleton anyway
+   */
   private static boolean suspendedDrawing;
   private static int suspendedDrawMode;
 
